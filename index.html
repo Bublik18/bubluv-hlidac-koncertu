@@ -8,13 +8,13 @@
   <link rel="apple-touch-icon" href="icon-512.png" />
   <style>
     :root {
-      --bg-deep: #041326;
-      --bg-mid: #08294d;
-      --bg-light: #0e467a;
+      --bg-deep: #031024;
+      --bg-mid: #072852;
+      --bg-light: #0d4b8c;
       --accent: #38bdf8;
       --alert: #ef4444;
-      --glass: rgba(8, 28, 54, 0.62);
-      --glass-border: rgba(125, 211, 252, 0.22);
+      --glass: rgba(7, 26, 52, 0.56);
+      --glass-border: rgba(125, 211, 252, 0.25);
       --text: #f0f9ff;
       --muted: #93c5fd;
     }
@@ -26,7 +26,7 @@
       color: var(--text);
       min-height: 100vh;
       background:
-        radial-gradient(ellipse at 50% -10%, rgba(56, 189, 248, 0.34), transparent 60%),
+        radial-gradient(ellipse at 50% -12%, rgba(56, 189, 248, 0.36), transparent 62%),
         linear-gradient(180deg, var(--bg-light) 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
       background-attachment: fixed;
       padding-bottom: 92px;
@@ -36,26 +36,27 @@
 
     .water-layer {
       position: fixed;
-      inset: -15%;
+      inset: -18%;
       pointer-events: none;
       z-index: 0;
       background:
-        radial-gradient(circle at 25% 20%, rgba(125, 211, 252, 0.16), transparent 42%),
-        radial-gradient(circle at 75% 35%, rgba(56, 189, 248, 0.18), transparent 48%),
+        radial-gradient(circle at 22% 18%, rgba(125, 211, 252, 0.20), transparent 44%),
+        radial-gradient(circle at 78% 28%, rgba(56, 189, 248, 0.22), transparent 50%),
+        radial-gradient(circle at 50% 65%, rgba(14, 165, 233, 0.14), transparent 55%),
         repeating-linear-gradient(
-          -18deg,
-          rgba(125, 211, 252, 0.03) 0px,
-          rgba(125, 211, 252, 0.03) 14px,
-          transparent 14px,
-          transparent 34px
+          -16deg,
+          rgba(186, 230, 253, 0.045) 0px,
+          rgba(186, 230, 253, 0.045) 16px,
+          transparent 16px,
+          transparent 38px
         );
-      animation: waterDrift 14s ease-in-out infinite alternate;
+      animation: waterDrift 13s ease-in-out infinite alternate;
       transition: opacity 0.3s ease;
     }
 
     @keyframes waterDrift {
-      0% { transform: translate3d(-1.5%, -1%, 0) scale(1); }
-      100% { transform: translate3d(1.5%, 1.5%, 0) scale(1.03); }
+      0% { transform: translate3d(-2%, -1.2%, 0) scale(1); }
+      100% { transform: translate3d(2%, 1.6%, 0) scale(1.04); }
     }
 
     body.low-power .water-layer {
@@ -398,7 +399,7 @@
       <div class="panel help-box">
         <div class="panel-title">Upozornění do mobilu (ntfy)</div>
         <p>
-          Pokud chceš dostávat upozornění na nové koncerty automaticky na mobil, aniž bys musel pořád otevírat aplikaci nebo stránku, stáhni si bezplatnou aplikaci <strong>ntfy</strong>. Ta tě bude upozorňovat na nové akce i bez spuštěné aplikace.
+          Pokud chceš mít upozornění na nové koncerty automaticky na mobilu bez toho, aniž bys musel zapínat aplikaci nebo stránku, stáhni si bezplatnou aplikaci <strong>ntfy</strong>. Ta tě bude upozorňovat na každou novou akci i bez spuštěné aplikace.
         </p>
         <p>
           Nainstaluj aplikaci <strong>ntfy</strong>, klikni na přidání odběru a zkopíruj tento text: <strong>"Bublův hlídač koncertů"</strong> (v aplikaci zadej kanál <strong>"bubluv-hlidac-koncertu"</strong>) a povol oznámení.
