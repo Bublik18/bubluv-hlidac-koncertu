@@ -3,120 +3,97 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bublův hlídač koncertů</title>
-  <link rel="icon" type="image/png" href="icon-512.png" />
+  <title>GigRadar</title>
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
   <link rel="apple-touch-icon" href="icon-512.png" />
   <style>
     :root {
-      --bg-deep: #031024;
-      --bg-mid: #072852;
-      --bg-light: #0d4b8c;
-      --accent: #38bdf8;
+      --bg-deep: #020813;
+      --bg-mid: #05162d;
+      --bg-light: #0a2a52;
+      --neon-cyan: #00f0ff;
+      --neon-blue: #38bdf8;
       --alert: #ef4444;
-      --glass: rgba(7, 26, 52, 0.56);
-      --glass-border: rgba(125, 211, 252, 0.25);
+      --card-bg: rgba(5, 18, 38, 0.86);
+      --border-glow: rgba(0, 240, 255, 0.58);
       --text: #f0f9ff;
       --muted: #93c5fd;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
+    html, body {
+      height: 100%;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       color: var(--text);
-      min-height: 100vh;
       background:
-        radial-gradient(ellipse at 50% -12%, rgba(56, 189, 248, 0.36), transparent 62%),
+        radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.18), transparent 55%),
         linear-gradient(180deg, var(--bg-light) 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
       background-attachment: fixed;
-      padding-bottom: 92px;
-      position: relative;
-      overflow-x: hidden;
     }
 
-    .water-layer {
-      position: fixed;
-      inset: -18%;
-      pointer-events: none;
-      z-index: 0;
-      background:
-        radial-gradient(circle at 22% 18%, rgba(125, 211, 252, 0.20), transparent 44%),
-        radial-gradient(circle at 78% 28%, rgba(56, 189, 248, 0.22), transparent 50%),
-        radial-gradient(circle at 50% 65%, rgba(14, 165, 233, 0.14), transparent 55%),
-        repeating-linear-gradient(
-          -16deg,
-          rgba(186, 230, 253, 0.045) 0px,
-          rgba(186, 230, 253, 0.045) 16px,
-          transparent 16px,
-          transparent 38px
-        );
-      animation: waterDrift 13s ease-in-out infinite alternate;
-      transition: opacity 0.3s ease;
+    body {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    @keyframes waterDrift {
-      0% { transform: translate3d(-2%, -1.2%, 0) scale(1); }
-      100% { transform: translate3d(2%, 1.6%, 0) scale(1.04); }
-    }
-
-    body.low-power .water-layer {
-      opacity: 0;
-      animation: none;
-    }
-
-    body.low-power {
-      background: linear-gradient(180deg, #093059 0%, #041326 100%);
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
+    .app-shell {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       max-width: 780px;
+      width: 100%;
       margin: 0 auto;
-      padding: 14px;
+      padding: 10px 12px 66px;
+      overflow: hidden;
     }
 
+    /* Horní okno ve stylu ikony (pouze na 1. stránce Koncerty) */
     .header-card {
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
+      background: var(--card-bg);
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.25), inset 0 0 12px rgba(56, 189, 248, 0.14);
       border-radius: 18px;
       overflow: hidden;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
     }
 
     .header-row-1 {
-      padding: 14px 16px;
+      padding: 10px 14px;
       text-align: center;
-      border-bottom: 1px solid rgba(125, 211, 252, 0.14);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .app-title {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-      color: #7dd3fc;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 1.38rem;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.55);
     }
 
     .header-row-2 {
-      padding: 10px 16px;
+      padding: 8px 14px;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid rgba(125, 211, 252, 0.14);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.22);
     }
 
     .btn-new {
-      background: rgba(239, 68, 68, 0.22);
-      border: 1px solid rgba(248, 113, 113, 0.6);
+      background: rgba(239, 68, 68, 0.24);
+      border: 1.5px solid rgba(248, 113, 113, 0.75);
       color: #fecaca;
       font-weight: 700;
-      font-size: 0.9rem;
-      padding: 6px 14px;
+      font-size: 0.85rem;
+      padding: 5px 14px;
       border-radius: 999px;
       cursor: pointer;
     }
@@ -124,93 +101,111 @@
     .btn-new.active {
       background: var(--alert);
       color: #fff;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
     }
 
     .header-row-3 {
-      padding: 10px 16px;
+      padding: 8px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      font-size: 0.85rem;
+      gap: 8px;
+      font-size: 0.8rem;
       color: var(--muted);
     }
 
     .btn-check {
-      background: rgba(56, 189, 248, 0.18);
-      border: 1px solid rgba(56, 189, 248, 0.5);
+      background: rgba(0, 240, 255, 0.14);
+      border: 1.5px solid var(--neon-cyan);
       color: #e0f2fe;
       font-weight: 700;
-      padding: 7px 14px;
-      border-radius: 12px;
+      font-size: 0.82rem;
+      padding: 6px 12px;
+      border-radius: 10px;
       cursor: pointer;
     }
 
+    .tab-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
     .panel {
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-glow);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.12);
       border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 14px;
+      padding: 11px 12px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
     }
 
     .panel-title {
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 700;
-      color: #7dd3fc;
-      margin-bottom: 10px;
+      color: var(--neon-cyan);
+      margin-bottom: 7px;
     }
 
     .chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
+      gap: 6px;
+      margin-bottom: 8px;
     }
 
     .chip {
-      background: rgba(15, 45, 82, 0.75);
-      border: 1px solid rgba(125, 211, 252, 0.25);
+      background: rgba(10, 32, 62, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.35);
       color: var(--text);
-      padding: 6px 12px;
+      padding: 5px 11px;
       border-radius: 999px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
     }
 
     .chip.selected {
-      background: rgba(56, 189, 248, 0.28);
-      border-color: var(--accent);
+      background: rgba(0, 240, 255, 0.22);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.35);
       color: #ffffff;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .controls-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
     }
 
     select, input[type="text"] {
-      background: rgba(4, 19, 38, 0.85);
-      border: 1px solid rgba(125, 211, 252, 0.3);
+      background: rgba(3, 12, 26, 0.92);
+      border: 1px solid rgba(0, 240, 255, 0.4);
       color: var(--text);
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-radius: 10px;
-      font-size: 0.9rem;
+      font-size: 0.82rem;
     }
 
-    input[type="text"] { flex: 1; min-width: 170px; }
+    input[type="text"] { flex: 1; min-width: 160px; }
+
+    /* Roluje pouze vnitřní seznam koncertů a kalendář, vrchní část zůstává pevná */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
 
     .concert-card {
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 10px;
+      background: var(--card-bg);
+      border: 1.5px solid rgba(56, 189, 248, 0.45);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.1);
+      border-radius: 14px;
+      padding: 11px 12px;
+      margin-bottom: 8px;
     }
 
     .concert-top {
@@ -218,11 +213,11 @@
       justify-content: space-between;
       align-items: flex-start;
       gap: 8px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .band-name {
-      font-size: 1.08rem;
+      font-size: 1rem;
       font-weight: 700;
       color: #ffffff;
     }
@@ -230,86 +225,79 @@
     .badge-new {
       background: var(--alert);
       color: #fff;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
-      padding: 2px 8px;
+      padding: 2px 7px;
       border-radius: 999px;
       white-space: nowrap;
     }
 
     .meta {
-      font-size: 0.88rem;
+      font-size: 0.8rem;
       color: var(--muted);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .card-actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .btn-ticket {
       display: inline-block;
       text-decoration: none;
-      background: rgba(56, 189, 248, 0.22);
-      border: 1px solid rgba(56, 189, 248, 0.55);
+      background: rgba(0, 240, 255, 0.16);
+      border: 1px solid var(--neon-cyan);
       color: #e0f2fe;
       font-weight: 700;
-      font-size: 0.86rem;
-      padding: 7px 14px;
-      border-radius: 10px;
+      font-size: 0.8rem;
+      padding: 5px 12px;
+      border-radius: 9px;
     }
 
     .btn-star {
       background: transparent;
-      border: 1px solid rgba(125, 211, 252, 0.25);
+      border: 1px solid rgba(56, 189, 248, 0.35);
       color: #bae6fd;
-      padding: 6px 10px;
-      border-radius: 10px;
+      padding: 5px 9px;
+      border-radius: 9px;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
 
     .btn-star.fav {
-      border-color: #38bdf8;
-      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--neon-cyan);
+      background: rgba(0, 240, 255, 0.18);
       color: #fff;
     }
 
-    .help-box p {
-      font-size: 0.9rem;
-      line-height: 1.5;
-      color: #e0f2fe;
-      margin-bottom: 8px;
-    }
-
     .month-group {
-      margin-bottom: 10px;
-      border-bottom: 1px solid rgba(125, 211, 252, 0.14);
-      padding-bottom: 8px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.14);
+      padding-bottom: 6px;
     }
 
     .month-label {
       font-weight: 700;
-      color: #7dd3fc;
-      font-size: 0.92rem;
-      margin-bottom: 4px;
+      color: var(--neon-cyan);
+      font-size: 0.85rem;
+      margin-bottom: 3px;
     }
 
     .month-item {
-      font-size: 0.86rem;
+      font-size: 0.8rem;
       color: #e0f2fe;
       padding: 2px 0;
     }
 
     .footer-note {
       text-align: center;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--muted);
-      padding: 12px 8px 20px;
+      padding: 10px 6px 4px;
+      margin-top: auto;
     }
 
     .bottom-nav {
@@ -318,8 +306,9 @@
       left: 0;
       right: 0;
       z-index: 20;
-      background: rgba(4, 19, 38, 0.94);
-      border-top: 1px solid rgba(125, 211, 252, 0.22);
+      background: rgba(2, 8, 19, 0.96);
+      border-top: 1.5px solid var(--neon-cyan);
+      box-shadow: 0 -2px 14px rgba(0, 240, 255, 0.18);
       display: flex;
       justify-content: space-around;
       padding: 8px 6px;
@@ -327,47 +316,47 @@
 
     .nav-btn {
       background: none;
-      border: none;
+      border: 1px solid transparent;
       color: var(--muted);
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 6px 10px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 6px 14px;
       border-radius: 10px;
       cursor: pointer;
     }
 
     .nav-btn.active {
-      color: #7dd3fc;
-      background: rgba(56, 189, 248, 0.14);
+      color: var(--neon-cyan);
+      border-color: rgba(0, 240, 255, 0.45);
+      background: rgba(0, 240, 255, 0.12);
     }
 
-    .hidden { display: none; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
-  <div class="water-layer" aria-hidden="true"></div>
-  <div class="container">
-    <header class="header-card">
-      <div class="header-row-1">
-        <div class="app-title">Bublův hlídač koncertů</div>
-      </div>
-      <div class="header-row-2">
-        <button id="btnOnlyNew" class="btn-new" onclick="toggleOnlyNew()">0 nových</button>
-      </div>
-      <div class="header-row-3">
-        <span id="lastCheckText">Poslední kontrola: načítám...</span>
-        <button class="btn-check" onclick="refreshConcerts(true)">Zkontrolovat</button>
-      </div>
-    </header>
+  <div class="app-shell">
+    <!-- ZÁLOŽKA 1: KONCERTY -->
+    <section id="tab-events" class="tab-view">
+      <header class="header-card">
+        <div class="header-row-1">
+          <div class="app-title">🤘 GigRadar 🎸</div>
+        </div>
+        <div class="header-row-2">
+          <button id="btnOnlyNew" class="btn-new" onclick="toggleOnlyNew()">0 nových</button>
+        </div>
+        <div class="header-row-3">
+          <span id="lastCheckText">Poslední kontrola: načítám...</span>
+          <button class="btn-check" onclick="refreshConcerts(true)">Zkontrolovat</button>
+        </div>
+      </header>
 
-    <!-- ZÁLOŽKA 1: KONCERTY & KALENDÁŘ -->
-    <section id="tab-events">
       <div class="panel">
         <div class="panel-title">Žánry (lze vybrat více)</div>
         <div class="chips" id="genreChips"></div>
 
         <div class="panel-title">Město, okruh a okolí</div>
-        <div class="controls-row" style="margin-bottom: 10px;">
+        <div class="controls-row">
           <select id="citySelect" onchange="saveAndRender()">
             <option value="Brno">Brno</option>
             <option value="Praha">Praha</option>
@@ -382,33 +371,22 @@
             <option value="200">Do 200 km</option>
           </select>
           <button id="btnNeighbor" class="chip" onclick="toggleNeighbor()">+ Okolní země</button>
-        </div>
-
-        <div class="controls-row">
-          <button id="btnOnlyFavsMain" class="chip" onclick="toggleOnlyFavs()">Pouze mé oblíbené kapely</button>
+          <button id="btnOnlyFavsMain" class="chip" onclick="toggleOnlyFavs()">★ Oblíbené</button>
         </div>
       </div>
 
-      <div id="concertsList"></div>
+      <div class="scroll-area">
+        <div id="concertsList"></div>
 
-      <div class="panel">
-        <div class="panel-title">Měsíční kalendář akcí</div>
-        <div id="monthlyCalendar"></div>
-      </div>
-
-      <div class="panel help-box">
-        <div class="panel-title">Upozornění do mobilu (ntfy)</div>
-        <p>
-          Pokud chceš mít upozornění na nové koncerty automaticky na mobilu bez toho, aniž bys musel zapínat aplikaci nebo stránku, stáhni si bezplatnou aplikaci <strong>ntfy</strong>. Ta tě bude upozorňovat na každou novou akci i bez spuštěné aplikace.
-        </p>
-        <p>
-          Nainstaluj aplikaci <strong>ntfy</strong>, klikni na přidání odběru a zkopíruj tento text: <strong>"Bublův hlídač koncertů"</strong> (v aplikaci zadej kanál <strong>"bubluv-hlidac-koncertu"</strong>) a povol oznámení.
-        </p>
+        <div class="panel">
+          <div class="panel-title">Měsíční kalendář akcí</div>
+          <div id="monthlyCalendar"></div>
+        </div>
       </div>
     </section>
 
     <!-- ZÁLOŽKA 2: KAPELY -->
-    <section id="tab-bands" class="hidden">
+    <section id="tab-bands" class="tab-view hidden">
       <div class="panel">
         <div class="panel-title">Moje oblíbené kapely</div>
         <div class="controls-row" style="margin-bottom: 10px;">
@@ -420,21 +398,22 @@
     </section>
 
     <!-- ZÁLOŽKA 3: NASTAVENÍ -->
-    <section id="tab-settings" class="hidden">
+    <section id="tab-settings" class="tab-view hidden">
       <div class="panel">
-        <div class="panel-title">Nastavení zobrazení</div>
+        <div class="panel-title">Nastavení zobrazení a dat</div>
         <div class="chips">
-          <button id="btnLowPower" class="chip" onclick="toggleLowPower()">Úsporný režim pozadí</button>
+          <button id="btnWifiOnly" class="chip" onclick="toggleWifiOnly()">Stahovat obrázky jen přes Wi-Fi</button>
         </div>
-        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 8px;">
-          Kanál v aplikaci ntfy: <strong>"bubluv-hlidac-koncertu"</strong>. Kliknutí na lístky: <strong id="clickCounter">0</strong>.
+        <p style="font-size: 0.84rem; color: var(--muted); margin-top: 8px; line-height: 1.5;">
+          Kanál v aplikaci ntfy: <strong>bubluv-hlidac-koncertu</strong><br />
+          Kliknutí na vstupenky: <strong id="clickCounter">0</strong>
         </p>
       </div>
-    </section>
 
-    <footer class="footer-note">
-      © 2026 Bublův hlídač koncertů · Autor: Bubla · Nekomerční rozcestník pro fanoušky 🤘
-    </footer>
+      <footer class="footer-note">
+        © 2026 GigRadar · Autor: Bubla · Nekomerční rozcestník pro fanoušky 🤘
+      </footer>
+    </section>
   </div>
 
   <nav class="bottom-nav">
@@ -457,7 +436,7 @@
       "Stuttgart": [48.7758, 9.1829]
     };
 
-    const GENRES = ["Rock", "Metal", "Pop", "Rap"];
+    const GENRES = ["Rock", "Metal", "Pop", "Rap", "Hip hop"];
 
     const FALLBACK_DATA = {
       updatedAt: "Ukázková data",
@@ -502,13 +481,13 @@
     };
 
     let state = {
-      selectedGenres: ["Rock", "Metal", "Pop", "Rap"],
+      selectedGenres: ["Rock", "Metal", "Pop", "Rap", "Hip hop"],
       city: "Brno",
       radius: 9999,
       includeNeighbors: true,
       onlyNew: false,
       onlyFavs: false,
-      lowPower: false,
+      wifiOnly: false,
       favBands: ["Monkey Business", "Judas Priest", "Kabát"],
       clicks: 0
     };
@@ -517,19 +496,18 @@
 
     function loadState() {
       try {
-        const saved = JSON.parse(localStorage.getItem("bubla_state_v1") || "{}");
+        const saved = JSON.parse(localStorage.getItem("gigradar_state_v1") || "{}");
         state = { ...state, ...saved };
       } catch (e) {}
       if (!CITY_COORDS[state.city]) state.city = "Brno";
       document.getElementById("citySelect").value = state.city;
       document.getElementById("radiusSelect").value = String(state.radius);
       document.getElementById("clickCounter").textContent = state.clicks;
-      document.body.classList.toggle("low-power", !!state.lowPower);
     }
 
     function saveState() {
       try {
-        localStorage.setItem("bubla_state_v1", JSON.stringify(state));
+        localStorage.setItem("gigradar_state_v1", JSON.stringify(state));
       } catch (e) {}
     }
 
@@ -549,7 +527,7 @@
 
     function withUtm(url) {
       const sep = url.includes("?") ? "&" : "?";
-      return `${url}${sep}utm_source=bubluv_hlidac&utm_medium=app&utm_campaign=koncerty`;
+      return `${url}${sep}utm_source=gigradar&utm_medium=app&utm_campaign=koncerty`;
     }
 
     function trackClick() {
@@ -612,9 +590,8 @@
       renderAll();
     }
 
-    function toggleLowPower() {
-      state.lowPower = !state.lowPower;
-      document.body.classList.toggle("low-power", state.lowPower);
+    function toggleWifiOnly() {
+      state.wifiOnly = !state.wifiOnly;
       saveState();
       renderAll();
     }
@@ -664,11 +641,11 @@
       const btnNeighbor = document.getElementById("btnNeighbor");
       btnNeighbor.classList.toggle("selected", state.includeNeighbors);
 
-      const btnLow = document.getElementById("btnLowPower");
-      if (btnLow) btnLow.classList.toggle("selected", state.lowPower);
-
       const btnFavsMain = document.getElementById("btnOnlyFavsMain");
       if (btnFavsMain) btnFavsMain.classList.toggle("selected", state.onlyFavs);
+
+      const btnWifi = document.getElementById("btnWifiOnly");
+      if (btnWifi) btnWifi.classList.toggle("selected", state.wifiOnly);
 
       const genreBox = document.getElementById("genreChips");
       genreBox.innerHTML = "";

@@ -1,7 +1,8 @@
-name: GigRadar - kontrola koncertu 3x denne
+name: GigRadar - kontrola 3x denne
 
 on:
   schedule:
+    # Spouští se 3x denně v 9:00, 13:00 a 17:00 SEČ (8:00, 12:00 a 16:00 UTC)
     - cron: '0 8,12,16 * * *'
   workflow_dispatch:
 
