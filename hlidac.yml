@@ -1,4 +1,4 @@
-name: GigRadar scheduled check
+name: GigRadar - kontrola koncertu 3x denne
 
 on:
   schedule:
@@ -9,26 +9,17 @@ permissions:
   contents: write
 
 jobs:
-  run-gigradar:
+  check-concerts:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run GigRadar script
-        run: python hlidac.py
-
-      - name: Commit updated koncerty.json
-        run: |
-          git config --local user.email "gigradar-bot@users.noreply.github.com"
-          git config --local user.name "GigRadar Bot"
+      - run: pip install -r requirements.txt
+      - run: python hlidac.py
+      - run: |
+          git config --local user.email "bubla-bot@users.noreply.github.com"
+          git config --local user.name "GigRadar bot"
           git add koncerty.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update koncerty.json" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Aktualizace koncertu" && git push)
