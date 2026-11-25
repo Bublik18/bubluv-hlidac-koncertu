@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GigRadar – Bublův hlídač koncertů</title>
-  <link rel="icon" type="image/png" href="icon-192.png" />
+  <title>Bublův hlídač koncertů</title>
+  <link rel="icon" type="image/png" href="icon-512.png" />
   <link rel="apple-touch-icon" href="icon-512.png" />
   <style>
     :root {
-      --bg-deep: #030f22;
-      --bg-mid: #072347;
-      --bg-light: #0d3f75;
-      --neon-cyan: #22d3ee;
-      --neon-blue: #38bdf8;
+      --bg-deep: #041326;
+      --bg-mid: #08294d;
+      --bg-light: #0e467a;
+      --accent: #38bdf8;
       --alert: #ef4444;
-      --glass: rgba(7, 25, 52, 0.72);
-      --glass-border: rgba(56, 189, 248, 0.34);
+      --glass: rgba(8, 28, 54, 0.62);
+      --glass-border: rgba(125, 211, 252, 0.22);
       --text: #f0f9ff;
       --muted: #93c5fd;
     }
@@ -27,17 +26,50 @@
       color: var(--text);
       min-height: 100vh;
       background:
-        radial-gradient(ellipse at 50% -12%, rgba(34, 211, 238, 0.28), transparent 62%),
+        radial-gradient(ellipse at 50% -10%, rgba(56, 189, 248, 0.34), transparent 60%),
         linear-gradient(180deg, var(--bg-light) 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
       background-attachment: fixed;
       padding-bottom: 92px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .water-layer {
+      position: fixed;
+      inset: -15%;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 25% 20%, rgba(125, 211, 252, 0.16), transparent 42%),
+        radial-gradient(circle at 75% 35%, rgba(56, 189, 248, 0.18), transparent 48%),
+        repeating-linear-gradient(
+          -18deg,
+          rgba(125, 211, 252, 0.03) 0px,
+          rgba(125, 211, 252, 0.03) 14px,
+          transparent 14px,
+          transparent 34px
+        );
+      animation: waterDrift 14s ease-in-out infinite alternate;
+      transition: opacity 0.3s ease;
+    }
+
+    @keyframes waterDrift {
+      0% { transform: translate3d(-1.5%, -1%, 0) scale(1); }
+      100% { transform: translate3d(1.5%, 1.5%, 0) scale(1.03); }
+    }
+
+    body.low-power .water-layer {
+      opacity: 0;
+      animation: none;
     }
 
     body.low-power {
-      background: linear-gradient(180deg, #082b52 0%, #030f22 100%);
+      background: linear-gradient(180deg, #093059 0%, #041326 100%);
     }
 
     .container {
+      position: relative;
+      z-index: 1;
       max-width: 780px;
       margin: 0 auto;
       padding: 14px;
@@ -50,46 +82,22 @@
       border-radius: 18px;
       overflow: hidden;
       margin-bottom: 14px;
-      box-shadow: 0 0 24px rgba(34, 211, 238, 0.08);
     }
 
     .header-row-1 {
-      padding: 12px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      border-bottom: 1px solid rgba(56, 189, 248, 0.16);
-    }
-
-    .header-spacer {
-      width: 68px;
-      flex-shrink: 0;
+      padding: 14px 16px;
+      text-align: center;
+      border-bottom: 1px solid rgba(125, 211, 252, 0.14);
     }
 
     .app-title {
-      flex: 1;
-      text-align: center;
-      font-size: 1.28rem;
+      font-size: 1.35rem;
       font-weight: 800;
-      letter-spacing: 0.4px;
-      color: var(--neon-cyan);
-      text-shadow: 0 0 12px rgba(34, 211, 238, 0.35);
+      letter-spacing: 0.3px;
+      color: #7dd3fc;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    .lang-select {
-      width: auto;
-      min-width: 68px;
-      padding: 4px 8px;
-      font-size: 0.78rem;
-      border-radius: 8px;
-      border: 1px solid rgba(34, 211, 238, 0.45);
-      background: rgba(3, 15, 34, 0.9);
-      color: #cffafe;
-      font-weight: 600;
     }
 
     .header-row-2 {
@@ -98,15 +106,15 @@
       justify-content: center;
       align-items: center;
       gap: 10px;
-      border-bottom: 1px solid rgba(56, 189, 248, 0.16);
+      border-bottom: 1px solid rgba(125, 211, 252, 0.14);
     }
 
     .btn-new {
-      background: rgba(239, 68, 68, 0.24);
-      border: 1px solid rgba(248, 113, 113, 0.65);
+      background: rgba(239, 68, 68, 0.22);
+      border: 1px solid rgba(248, 113, 113, 0.6);
       color: #fecaca;
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       padding: 6px 14px;
       border-radius: 999px;
       cursor: pointer;
@@ -120,35 +128,21 @@
     .header-row-3 {
       padding: 10px 16px;
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
       gap: 10px;
-      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--muted);
     }
 
     .btn-check {
-      background: rgba(34, 211, 238, 0.16);
-      border: 1px solid rgba(34, 211, 238, 0.55);
+      background: rgba(56, 189, 248, 0.18);
+      border: 1px solid rgba(56, 189, 248, 0.5);
       color: #e0f2fe;
       font-weight: 700;
-      font-size: 0.82rem;
-      padding: 6px 12px;
-      border-radius: 10px;
+      padding: 7px 14px;
+      border-radius: 12px;
       cursor: pointer;
-    }
-
-    .btn-check:disabled {
-      opacity: 0.65;
-      cursor: wait;
-    }
-
-    .check-status-box {
-      font-size: 0.82rem;
-      color: #bae6fd;
-      background: rgba(3, 15, 34, 0.65);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 10px;
-      padding: 5px 10px;
     }
 
     .panel {
@@ -161,9 +155,9 @@
     }
 
     .panel-title {
-      font-size: 0.94rem;
+      font-size: 0.95rem;
       font-weight: 700;
-      color: var(--neon-cyan);
+      color: #7dd3fc;
       margin-bottom: 10px;
     }
 
@@ -171,22 +165,22 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .chip {
-      background: rgba(12, 42, 78, 0.82);
-      border: 1px solid rgba(56, 189, 248, 0.28);
+      background: rgba(15, 45, 82, 0.75);
+      border: 1px solid rgba(125, 211, 252, 0.25);
       color: var(--text);
       padding: 6px 12px;
       border-radius: 999px;
-      font-size: 0.84rem;
+      font-size: 0.85rem;
       cursor: pointer;
     }
 
     .chip.selected {
-      background: rgba(34, 211, 238, 0.24);
-      border-color: var(--neon-cyan);
+      background: rgba(56, 189, 248, 0.28);
+      border-color: var(--accent);
       color: #ffffff;
       font-weight: 600;
     }
@@ -199,8 +193,8 @@
     }
 
     select, input[type="text"] {
-      background: rgba(3, 15, 34, 0.88);
-      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: rgba(4, 19, 38, 0.85);
+      border: 1px solid rgba(125, 211, 252, 0.3);
       color: var(--text);
       padding: 8px 12px;
       border-radius: 10px;
@@ -216,24 +210,6 @@
       border-radius: 16px;
       padding: 14px;
       margin-bottom: 10px;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-
-    .poster-thumb {
-      width: 68px;
-      height: 68px;
-      object-fit: cover;
-      border-radius: 10px;
-      border: 1px solid rgba(34, 211, 238, 0.35);
-      flex-shrink: 0;
-      background: rgba(3, 15, 34, 0.9);
-    }
-
-    .concert-body {
-      flex: 1;
-      min-width: 0;
     }
 
     .concert-top {
@@ -245,7 +221,7 @@
     }
 
     .band-name {
-      font-size: 1.06rem;
+      font-size: 1.08rem;
       font-weight: 700;
       color: #ffffff;
     }
@@ -261,7 +237,7 @@
     }
 
     .meta {
-      font-size: 0.86rem;
+      font-size: 0.88rem;
       color: var(--muted);
       margin-bottom: 10px;
     }
@@ -277,40 +253,47 @@
     .btn-ticket {
       display: inline-block;
       text-decoration: none;
-      background: rgba(34, 211, 238, 0.22);
-      border: 1px solid rgba(34, 211, 238, 0.6);
+      background: rgba(56, 189, 248, 0.22);
+      border: 1px solid rgba(56, 189, 248, 0.55);
       color: #e0f2fe;
       font-weight: 700;
-      font-size: 0.84rem;
+      font-size: 0.86rem;
       padding: 7px 14px;
       border-radius: 10px;
     }
 
     .btn-star {
       background: transparent;
-      border: 1px solid rgba(56, 189, 248, 0.3);
+      border: 1px solid rgba(125, 211, 252, 0.25);
       color: #bae6fd;
       padding: 6px 10px;
       border-radius: 10px;
       cursor: pointer;
-      font-size: 0.84rem;
+      font-size: 0.85rem;
     }
 
     .btn-star.fav {
-      border-color: var(--neon-cyan);
-      background: rgba(34, 211, 238, 0.2);
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.2);
       color: #fff;
+    }
+
+    .help-box p {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #e0f2fe;
+      margin-bottom: 8px;
     }
 
     .month-group {
       margin-bottom: 10px;
-      border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+      border-bottom: 1px solid rgba(125, 211, 252, 0.14);
       padding-bottom: 8px;
     }
 
     .month-label {
       font-weight: 700;
-      color: var(--neon-cyan);
+      color: #7dd3fc;
       font-size: 0.92rem;
       margin-bottom: 4px;
     }
@@ -319,16 +302,6 @@
       font-size: 0.86rem;
       color: #e0f2fe;
       padding: 2px 0;
-    }
-
-    .help-box {
-      font-size: 0.88rem;
-      line-height: 1.5;
-      color: #e0f2fe;
-    }
-
-    .help-box p {
-      margin-bottom: 8px;
     }
 
     .footer-note {
@@ -343,12 +316,12 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(3, 15, 34, 0.95);
-      border-top: 1px solid rgba(56, 189, 248, 0.25);
+      z-index: 20;
+      background: rgba(4, 19, 38, 0.94);
+      border-top: 1px solid rgba(125, 211, 252, 0.22);
       display: flex;
       justify-content: space-around;
       padding: 8px 6px;
-      z-index: 20;
     }
 
     .nav-btn {
@@ -363,96 +336,103 @@
     }
 
     .nav-btn.active {
-      color: var(--neon-cyan);
-      background: rgba(34, 211, 238, 0.16);
+      color: #7dd3fc;
+      background: rgba(56, 189, 248, 0.14);
     }
 
     .hidden { display: none; }
   </style>
 </head>
 <body>
+  <div class="water-layer" aria-hidden="true"></div>
   <div class="container">
     <header class="header-card">
       <div class="header-row-1">
-        <div class="header-spacer"></div>
-        <div class="app-title" id="appTitle">GigRadar</div>
-        <select id="langSelect" class="lang-select" aria-label="Language" onchange="changeLanguage()">
-          <option value="cs">CS</option>
-          <option value="sk">SK</option>
-          <option value="en">EN</option>
-          <option value="de">DE</option>
-          <option value="pl">PL</option>
-        </select>
+        <div class="app-title">Bublův hlídač koncertů</div>
       </div>
       <div class="header-row-2">
         <button id="btnOnlyNew" class="btn-new" onclick="toggleOnlyNew()">0 nových</button>
       </div>
       <div class="header-row-3">
-        <button id="btnCheck" class="btn-check" onclick="runCheck()">Zkontrolovat</button>
-        <div id="checkStatusBox" class="check-status-box">Připraveno ke kontrole</div>
+        <span id="lastCheckText">Poslední kontrola: načítám...</span>
+        <button class="btn-check" onclick="refreshConcerts(true)">Zkontrolovat</button>
       </div>
     </header>
 
+    <!-- ZÁLOŽKA 1: KONCERTY & KALENDÁŘ -->
     <section id="tab-events">
       <div class="panel">
-        <div class="panel-title" id="labelGenres">Žánry</div>
+        <div class="panel-title">Žánry (lze vybrat více)</div>
         <div class="chips" id="genreChips"></div>
 
-        <div class="panel-title" id="labelCountryCity">Země, město a okruh</div>
-        <div class="controls-row">
-          <select id="countrySelect" onchange="onCountryChange()">
-            <option value="CZ">Česko</option>
-            <option value="SK">Slovensko</option>
-            <option value="DE">Německo</option>
-            <option value="PL">Polsko</option>
-            <option value="AT">Rakousko</option>
+        <div class="panel-title">Město, okruh a okolí</div>
+        <div class="controls-row" style="margin-bottom: 10px;">
+          <select id="citySelect" onchange="saveAndRender()">
+            <option value="Brno">Brno</option>
+            <option value="Praha">Praha</option>
+            <option value="Ostrava">Ostrava</option>
+            <option value="Olomouc">Olomouc</option>
+            <option value="Plzeň">Plzeň</option>
           </select>
-          <select id="citySelect" onchange="saveAndRender()"></select>
           <select id="radiusSelect" onchange="saveAndRender()">
-            <option value="9999" id="optRadiusAll">Všechny vzdálenosti</option>
-            <option value="50">50 km</option>
-            <option value="100">100 km</option>
-            <option value="200">200 km</option>
+            <option value="9999">Všechny vzdálenosti</option>
+            <option value="50">Do 50 km</option>
+            <option value="100">Do 100 km</option>
+            <option value="200">Do 200 km</option>
           </select>
+          <button id="btnNeighbor" class="chip" onclick="toggleNeighbor()">+ Okolní země</button>
+        </div>
+
+        <div class="controls-row">
+          <button id="btnOnlyFavsMain" class="chip" onclick="toggleOnlyFavs()">Pouze mé oblíbené kapely</button>
         </div>
       </div>
 
       <div id="concertsList"></div>
 
       <div class="panel">
-        <div class="panel-title" id="labelCalendar">Měsíční kalendář akcí</div>
+        <div class="panel-title">Měsíční kalendář akcí</div>
         <div id="monthlyCalendar"></div>
+      </div>
+
+      <div class="panel help-box">
+        <div class="panel-title">Upozornění do mobilu (ntfy)</div>
+        <p>
+          Pokud chceš dostávat upozornění na nové koncerty automaticky na mobil, aniž bys musel pořád otevírat aplikaci nebo stránku, stáhni si bezplatnou aplikaci <strong>ntfy</strong>. Ta tě bude upozorňovat na nové akce i bez spuštěné aplikace.
+        </p>
+        <p>
+          Nainstaluj aplikaci <strong>ntfy</strong>, klikni na přidání odběru a zkopíruj tento text: <strong>"Bublův hlídač koncertů"</strong> (v aplikaci zadej kanál <strong>"bubluv-hlidac-koncertu"</strong>) a povol oznámení.
+        </p>
       </div>
     </section>
 
+    <!-- ZÁLOŽKA 2: KAPELY -->
     <section id="tab-bands" class="hidden">
       <div class="panel">
-        <div class="panel-title" id="labelFavBands">Moje oblíbené kapely</div>
+        <div class="panel-title">Moje oblíbené kapely</div>
         <div class="controls-row" style="margin-bottom: 10px;">
           <input id="newBandInput" type="text" placeholder="Např. Monkey Business nebo Judas Priest" />
-          <button id="btnAddBand" class="btn-check" onclick="addBand()">Přidat</button>
+          <button class="btn-check" onclick="addBand()">Přidat</button>
         </div>
         <div class="chips" id="bandsList"></div>
       </div>
     </section>
 
+    <!-- ZÁLOŽKA 3: NASTAVENÍ -->
     <section id="tab-settings" class="hidden">
       <div class="panel">
-        <div class="panel-title" id="labelSettings">Nastavení</div>
+        <div class="panel-title">Nastavení zobrazení</div>
         <div class="chips">
           <button id="btnLowPower" class="chip" onclick="toggleLowPower()">Úsporný režim pozadí</button>
-          <button id="btnOnlyFavs" class="chip" onclick="toggleOnlyFavs()">Pouze mé oblíbené kapely</button>
         </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-title" id="labelHelp">Nápověda</div>
-        <div id="helpContent" class="help-box"></div>
+        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 8px;">
+          Kanál v aplikaci ntfy: <strong>"bubluv-hlidac-koncertu"</strong>. Kliknutí na lístky: <strong id="clickCounter">0</strong>.
+        </p>
       </div>
     </section>
 
-    <footer class="footer-note" id="footerNote">
-      © 2026 GigRadar · Bublův hlídač koncertů · Autor: Bubla
+    <footer class="footer-note">
+      © 2026 Bublův hlídač koncertů · Autor: Bubla · Nekomerční rozcestník pro fanoušky 🤘
     </footer>
   </div>
 
@@ -463,235 +443,23 @@
   </nav>
 
   <script>
-    const TELEMETRY_URL = "https://script.google.com/macros/s/AKfycbz56ywk7BD1Fk7RqvOoZq_Esr8B2NnWhK43nKJTAdjPb-gyES4y6gFp2G5IXPjqkF3K/exec";
-
-    const COUNTRIES = {
-      CZ: {
-        label: { cs: "Česko", sk: "Česko", en: "Czechia", de: "Tschechien", pl: "Czechy", at: "Tschechien" },
-        cities: ["Brno", "Praha", "Ostrava", "Olomouc", "Plzeň", "Hodonín", "České Budějovice", "Hradec Králové"]
-      },
-      SK: {
-        label: { cs: "Slovensko", sk: "Slovensko", en: "Slovakia", de: "Slowakei", pl: "Słowacja" },
-        cities: ["Bratislava", "Košice", "Žilina", "Banská Bystrica", "Nitra", "Trnava", "Prešov", "Trenčín"]
-      },
-      DE: {
-        label: { cs: "Německo", sk: "Nemecko", en: "Germany", de: "Deutschland", pl: "Niemcy" },
-        cities: ["Mnichov", "Drážďany", "Berlín", "Lipsko", "Norimberk", "Vídeň", "Řezno", "Hamburk"]
-      },
-      PL: {
-        label: { cs: "Polsko", sk: "Poľsko", en: "Poland", de: "Polen", pl: "Polska" },
-        cities: ["Krakov", "Vratislav", "Katovice", "Varšava", "Ostrava", "Brno", "Poznaň", "Lodž"]
-      },
-      AT: {
-        label: { cs: "Rakousko", sk: "Rakúsko", en: "Austria", de: "Österreich", pl: "Austria" },
-        cities: ["Vídeň", "Brno", "Linec", " Štýrský Hradec", "Salcburk", "Innsbruck", "Sankt Pölten", "Bratislava"]
-      }
-    };
-
     const CITY_COORDS = {
       "Brno": [49.1951, 16.6068],
       "Praha": [50.0755, 14.4378],
       "Ostrava": [49.8209, 18.2625],
       "Olomouc": [49.5938, 17.2509],
       "Plzeň": [49.7384, 13.3736],
-      "Hodonín": [48.8489, 17.1324],
-      "České Budějovice": [48.9745, 14.4743],
-      "Hradec Králové": [50.2104, 15.8328],
-      "Bratislava": [48.1486, 17.1077],
-      "Košice": [48.7164, 21.2611],
-      "Žilina": [49.2231, 18.7394],
-      "Banská Bystrica": [48.7363, 19.1462],
-      "Nitra": [48.3069, 18.0864],
-      "Trnava": [48.3774, 17.5883],
-      "Prešov": [48.9984, 21.2339],
-      "Trenčín": [48.8945, 18.0444],
-      "Mnichov": [48.1351, 11.5820],
-      "Drážďany": [51.0504, 13.7373],
-      "Berlín": [52.5200, 13.4050],
-      "Lipsko": [51.3397, 12.3731],
-      "Norimberk": [49.4521, 11.0767],
-      "Řezno": [49.0134, 12.1016],
-      "Hamburk": [53.5511, 9.9937],
-      "Krakov": [50.0647, 19.9450],
-      "Vratislav": [51.1079, 17.0385],
-      "Katovice": [50.2649, 19.0238],
-      "Varšava": [52.2297, 21.0122],
-      "Poznaň": [52.4064, 16.9252],
-      "Lodž": [51.7592, 19.4560],
       "Vídeň": [48.2082, 16.3738],
-      "Linec": [48.3069, 14.2858],
-      "Štýrský Hradec": [47.0707, 15.4395],
-      "Salcburk": [47.8095, 13.0550],
-      "Innsbruck": [47.2692, 11.4041],
-      "Sankt Pölten": [48.2047, 15.6256]
+      "Bratislava": [48.1486, 17.1077],
+      "Krakov": [50.0647, 19.9450],
+      "Mnichov": [48.1351, 11.5820],
+      "Stuttgart": [48.7758, 9.1829]
     };
 
-    const GENRES = ["Vše", "Rock", "Metal", "Pop", "Rap", "Hip Hop"];
-
-    const I18N = {
-      cs: {
-        title: "GigRadar",
-        newFmt: n => `${n} nových`,
-        checkBtn: "Zkontrolovat",
-        statusIdle: "Připraveno ke kontrole",
-        statusRunning: "Probíhá kontrola koncertů...",
-        statusDone: n => `Kontrola dokončena (${n} akcí v přehledu)`,
-        genres: "Žánry",
-        countryCity: "Země, město a okruh",
-        radiusAll: "Všechny vzdálenosti",
-        calendar: "Měsíční kalendář akcí",
-        favBands: "Moje oblíbené kapely",
-        addBtn: "Přidat",
-        bandPlaceholder: "Např. Monkey Business nebo Judas Priest",
-        settings: "Nastavení",
-        lowPower: "Úsporný režim pozadí",
-        onlyFavs: "Pouze mé oblíbené kapely",
-        helpTitle: "Nápověda",
-        helpParagraphs: [
-          "Po zapnutí aplikace ntfy tě to vyzve k zadání kanálu, vlož tam <strong>bubluv-hlidac-koncertu</strong> (nebo svůj kanál) a povol oznámení.",
-          "Vyber si zemi (Česko, Slovensko, Německo, Polsko nebo Rakousko), město, vzdálenost a žánr. Plakáty a obrázky akcí se načítají automaticky bez omezení na Wi-Fi.",
-          "Tlačítko <strong>Zkontrolovat</strong> spustí okamžité načtení aktuálních dat a v okénku vedle ukáže průběh i dokončení kontroly."
-        ],
-        tickets: "Vstupenky",
-        favOn: "★ Oblíbené",
-        favOff: "☆ Hlídač",
-        noConcerts: "Žádný koncert neodpovídá zvoleným filtrům.",
-        navEvents: "Koncerty",
-        navBands: "Kapely",
-        navSettings: "Nastavení",
-        footer: "© 2026 GigRadar · Bublův hlídač koncertů · Autor: Bubla"
-      },
-      sk: {
-        title: "GigRadar",
-        newFmt: n => `${n} nových`,
-        checkBtn: "Skontrolovať",
-        statusIdle: "Pripravené na kontrolu",
-        statusRunning: "Prebieha kontrola koncertov...",
-        statusDone: n => `Kontrola dokončená (${n} akcií v prehľade)`,
-        genres: "Žánre",
-        countryCity: "Krajina, mesto a okruh",
-        radiusAll: "Všetky vzdialenosti",
-        calendar: "Mesačný kalendár akcií",
-        favBands: "Moje obľúbené kapely",
-        addBtn: "Pridať",
-        bandPlaceholder: "Napr. Monkey Business alebo Judas Priest",
-        settings: "Nastavenia",
-        lowPower: "Úsporný režim pozadia",
-        onlyFavs: "Len moje obľúbené kapely",
-        helpTitle: "Pomocník",
-        helpParagraphs: [
-          "Po zapnutí aplikácie ntfy ťa to vyzve na zadanie kanála, vlož tam <strong>bubluv-hlidac-koncertu</strong> (alebo svoj kanál) a povoľ oznámenia.",
-          "Vyber si krajinu (Česko, Slovensko, Nemecko, Poľsko alebo Rakúsko), mesto, vzdialenosť a žáner. Obrázky a plagáty akcií sa načítavajú vždy bez obmedzenia na Wi-Fi.",
-          "Tlačidlo <strong>Skontrolovať</strong> spustí okamžité načítanie dát a v okienku vedľa zobrazí priebeh aj dokončenie kontroly."
-        ],
-        tickets: "Vstupenky",
-        favOn: "★ Obľúbené",
-        favOff: "☆ Strážca",
-        noConcerts: "Žiadny koncert nezodpovedá zvoleným filtrom.",
-        navEvents: "Koncerty",
-        navBands: "Kapely",
-        navSettings: "Nastavenia",
-        footer: "© 2026 GigRadar · Bublův hlídač koncertů · Autor: Bubla"
-      },
-      en: {
-        title: "GigRadar",
-        newFmt: n => `${n} new`,
-        checkBtn: "Check",
-        statusIdle: "Ready to check",
-        statusRunning: "Checking concerts...",
-        statusDone: n => `Check completed (${n} events listed)`,
-        genres: "Genres",
-        countryCity: "Country, city & radius",
-        radiusAll: "All distances",
-        calendar: "Monthly event calendar",
-        favBands: "My favourite bands",
-        addBtn: "Add",
-        bandPlaceholder: "E.g. Monkey Business or Judas Priest",
-        settings: "Settings",
-        lowPower: "Low-power background",
-        onlyFavs: "Favourite bands only",
-        helpTitle: "Help",
-        helpParagraphs: [
-          "After opening ntfy, you will be prompted to enter a channel—enter <strong>bubluv-hlidac-koncertu</strong> (or your own channel) and allow notifications.",
-          "Select a country (Czechia, Slovakia, Germany, Poland, or Austria), city, distance, and genre. Event posters load automatically without a Wi-Fi-only restriction.",
-          "The <strong>Check</strong> button refreshes data right away and displays progress and completion in the status box next to it."
-        ],
-        tickets: "Tickets",
-        favOn: "★ Favourite",
-        favOff: "☆ Watch",
-        noConcerts: "No concerts match the selected filters.",
-        navEvents: "Concerts",
-        navBands: "Bands",
-        navSettings: "Settings",
-        footer: "© 2026 GigRadar · Bublův hlídač koncertů · Author: Bubla"
-      },
-      de: {
-        title: "GigRadar",
-        newFmt: n => `${n} neu`,
-        checkBtn: "Prüfen",
-        statusIdle: "Bereit zur Prüfung",
-        statusRunning: "Konzerte werden geprüft...",
-        statusDone: n => `Prüfung abgeschlossen (${n} Events)`,
-        genres: "Genres",
-        countryCity: "Land, Stadt & Umkreis",
-        radiusAll: "Alle Entfernungen",
-        calendar: "Monatskalender",
-        favBands: "Meine Lieblingsbands",
-        addBtn: "Hinzufügen",
-        bandPlaceholder: "Z. B. Monkey Business oder Judas Priest",
-        settings: "Einstellungen",
-        lowPower: "Energiespar-Hintergrund",
-        onlyFavs: "Nur Lieblingsbands",
-        helpTitle: "Hilfe",
-        helpParagraphs: [
-          "Nach dem Öffnen von ntfy wirst du zur Eingabe eines Kanals aufgefordert – trage dort <strong>bubluv-hlidac-koncertu</strong> (oder deinen eigenen Kanal) ein und erlaube Benachrichtigungen.",
-          "Wähle Land (Tschechien, Slowakei, Deutschland, Polen oder Österreich), Stadt, Umkreis und Genre. Bilder und Poster werden stets ohne WLAN-Beschränkung geladen.",
-          "Über <strong>Prüfen</strong> startest du sofort eine Aktualisierung und siehst den Status direkt im Feld daneben."
-        ],
-        tickets: "Tickets",
-        favOn: "★ Favorit",
-        favOff: "☆ Merken",
-        noConcerts: "Keine Konzerte passend zu den Filtern.",
-        navEvents: "Konzerte",
-        navBands: "Bands",
-        navSettings: "Einstellungen",
-        footer: "© 2026 GigRadar · Bublův hlídač koncertů · Autor: Bubla"
-      },
-      pl: {
-        title: "GigRadar",
-        newFmt: n => `${n} nowe`,
-        checkBtn: "Sprawdź",
-        statusIdle: "Gotowe do sprawdzenia",
-        statusRunning: "Sprawdzanie koncertów...",
-        statusDone: n => `Sprawdzanie zakończone (${n} wydarzeń)`,
-        genres: "Gatunki",
-        countryCity: "Kraj, miasto i zasięg",
-        radiusAll: "Wszystkie odległości",
-        calendar: "Kalendarz miesięczny",
-        favBands: "Moje ulubione zespoły",
-        addBtn: "Dodaj",
-        bandPlaceholder: "Np. Monkey Business lub Judas Priest",
-        settings: "Ustawienia",
-        lowPower: "Tryb oszczędzania tła",
-        onlyFavs: "Tylko ulubione zespoły",
-        helpTitle: "Pomoc",
-        helpParagraphs: [
-          "Po uruchomieniu aplikacji ntfy pojawi się prośba o podanie kanału – wpisz tam <strong>bubluv-hlidac-koncertu</strong> (lub własny kanał) i zezwól na powiadomienia.",
-          "Wybierz kraj (Czechy, Słowacja, Niemcy, Polska lub Austria), miasto, odległość i gatunek. Grafiki i plakaty ładują się zawsze bez ograniczenia do Wi-Fi.",
-          "Przycisk <strong>Sprawdź</strong> odświeża dane i pokazuje postęp oraz zakończenie w okienku obok."
-        ],
-        tickets: "Bilety",
-        favOn: "★ Ulubione",
-        favOff: "☆ Obserwuj",
-        noConcerts: "Brak koncertów spełniających kryteria.",
-        navEvents: "Koncerty",
-        navBands: "Zespoły",
-        navSettings: "Ustawienia",
-        footer: "© 2026 GigRadar · Bublův hlídač koncertů · Autor: Bubla"
-      }
-    };
+    const GENRES = ["Rock", "Metal", "Pop", "Rap"];
 
     const FALLBACK_DATA = {
+      updatedAt: "Ukázková data",
       concerts: [
         {
           id: "sample-1",
@@ -703,7 +471,6 @@
           genre: "Pop",
           seller: "GoOut.net",
           url: "https://goout.net",
-          poster: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=240&q=70",
           isNew: true
         },
         {
@@ -714,9 +481,8 @@
           country: "AT",
           date: "2027-02-18",
           genre: "Metal",
-          seller: "Ticketmaster.cz",
+          seller: "Ticketmaster",
           url: "https://www.ticketmaster.cz",
-          poster: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=240&q=70",
           isNew: true
         },
         {
@@ -729,135 +495,47 @@
           genre: "Rock",
           seller: "Ticketportal.cz",
           url: "https://www.ticketportal.cz",
-          poster: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=240&q=70",
           isNew: false
         }
       ]
     };
 
     let state = {
-      lang: "cs",
-      selectedGenres: ["Vše"],
-      country: "CZ",
+      selectedGenres: ["Rock", "Metal", "Pop", "Rap"],
       city: "Brno",
       radius: 9999,
+      includeNeighbors: true,
       onlyNew: false,
       onlyFavs: false,
       lowPower: false,
-      favBands: ["Monkey Business", "Judas Priest", "Kabát"]
+      favBands: ["Monkey Business", "Judas Priest", "Kabát"],
+      clicks: 0
     };
 
     let concerts = [];
 
-    function getAnonUserId() {
-      try {
-        let uid = localStorage.getItem("gigradar_anon_uid");
-        if (!uid) {
-          uid = "u-" + Math.random().toString(36).slice(2, 10);
-          localStorage.setItem("gigradar_anon_uid", uid);
-        }
-        return uid;
-      } catch (e) {
-        return "u-guest";
-      }
-    }
-
-    function sendTelemetry(eventType, band = "", seller = "") {
-      if (!TELEMETRY_URL || !TELEMETRY_URL.startsWith("https://")) return;
-      try {
-        fetch(TELEMETRY_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            event: eventType,
-            userId: getAnonUserId(),
-            band: band,
-            seller: seller
-          })
-        }).catch(() => {});
-      } catch (e) {}
-    }
-
-    function populateCities(selectedCity) {
-      const cInfo = COUNTRIES[state.country] || COUNTRIES.CZ;
-      const citySel = document.getElementById("citySelect");
-      citySel.innerHTML = "";
-      cInfo.cities.forEach(cityName => {
-        const opt = document.createElement("option");
-        opt.value = cityName.trim();
-        opt.textContent = cityName.trim();
-        citySel.appendChild(opt);
-      });
-      const cleanSelected = (selectedCity || "").trim();
-      if (cInfo.cities.map(x => x.trim()).includes(cleanSelected)) {
-        citySel.value = cleanSelected;
-        state.city = cleanSelected;
-      } else {
-        state.city = cInfo.cities[0].trim();
-        citySel.value = state.city;
-      }
-    }
-
-    function applyLanguageTexts() {
-      const t = I18N[state.lang] || I18N.cs;
-      document.documentElement.lang = state.lang;
-      document.getElementById("appTitle").textContent = t.title;
-      document.getElementById("btnCheck").textContent = t.checkBtn;
-      document.getElementById("labelGenres").textContent = t.genres;
-      document.getElementById("labelCountryCity").textContent = t.countryCity;
-      document.getElementById("optRadiusAll").textContent = t.radiusAll;
-      document.getElementById("labelCalendar").textContent = t.calendar;
-      document.getElementById("labelFavBands").textContent = t.favBands;
-      document.getElementById("btnAddBand").textContent = t.addBtn;
-      document.getElementById("newBandInput").placeholder = t.bandPlaceholder;
-      document.getElementById("labelSettings").textContent = t.settings;
-      document.getElementById("btnLowPower").textContent = t.lowPower;
-      document.getElementById("btnOnlyFavs").textContent = t.onlyFavs;
-      document.getElementById("labelHelp").textContent = t.helpTitle;
-      document.getElementById("helpContent").innerHTML = t.helpParagraphs.map(p => `<p>${p}</p>`).join("");
-      document.getElementById("nav-events").textContent = t.navEvents;
-      document.getElementById("nav-bands").textContent = t.navBands;
-      document.getElementById("nav-settings").textContent = t.navSettings;
-      document.getElementById("footerNote").textContent = t.footer;
-
-      const countrySel = document.getElementById("countrySelect");
-      Array.from(countrySel.options).forEach(opt => {
-        const cObj = COUNTRIES[opt.value];
-        if (cObj) {
-          opt.textContent = cObj.label[state.lang] || cObj.label.cs;
-        }
-      });
-
-      const statusBox = document.getElementById("checkStatusBox");
-      if (statusBox && !statusBox.dataset.hasChecked) {
-        statusBox.textContent = t.statusIdle;
-      }
-    }
-
     function loadState() {
       try {
-        const saved = JSON.parse(localStorage.getItem("gigradar_state_v2") || "{}");
+        const saved = JSON.parse(localStorage.getItem("bubla_state_v1") || "{}");
         state = { ...state, ...saved };
       } catch (e) {}
-      document.getElementById("langSelect").value = state.lang;
-      document.getElementById("countrySelect").value = COUNTRIES[state.country] ? state.country : "CZ";
-      populateCities(state.city);
+      if (!CITY_COORDS[state.city]) state.city = "Brno";
+      document.getElementById("citySelect").value = state.city;
       document.getElementById("radiusSelect").value = String(state.radius);
+      document.getElementById("clickCounter").textContent = state.clicks;
       document.body.classList.toggle("low-power", !!state.lowPower);
-      applyLanguageTexts();
     }
 
     function saveState() {
       try {
-        localStorage.setItem("gigradar_state_v2", JSON.stringify(state));
+        localStorage.setItem("bubla_state_v1", JSON.stringify(state));
       } catch (e) {}
     }
 
     function distanceKm(cityA, cityB) {
       const a = CITY_COORDS[cityA];
       const b = CITY_COORDS[cityB];
-      if (!a || !b) return 40;
+      if (!a || !b) return 50;
       const toRad = x => (x * Math.PI) / 180;
       const R = 6371;
       const dLat = toRad(b[0] - a[0]);
@@ -873,59 +551,51 @@
       return `${url}${sep}utm_source=bubluv_hlidac&utm_medium=app&utm_campaign=koncerty`;
     }
 
-    function onTicketClick(band, seller) {
-      sendTelemetry("Kliknutí na vstupenky", band, seller);
+    function trackClick() {
+      state.clicks += 1;
+      document.getElementById("clickCounter").textContent = state.clicks;
+      saveState();
     }
 
-    async function runCheck() {
-      const t = I18N[state.lang] || I18N.cs;
-      const btn = document.getElementById("btnCheck");
-      const box = document.getElementById("checkStatusBox");
-      btn.disabled = true;
-      box.textContent = t.statusRunning;
+    async function refreshConcerts(playBeep = false) {
+      if (playBeep) {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          osc.frequency.value = 740;
+          osc.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.12);
+        } catch (e) {}
+      }
 
       try {
         const res = await fetch("koncerty.json?t=" + Date.now());
         if (!res.ok) throw new Error("No JSON");
         const data = await res.json();
-        concerts = Array.isArray(data.concerts) && data.concerts.length ? data.concerts : FALLBACK_DATA.concerts;
+        concerts = Array.isArray(data.concerts) ? data.concerts : FALLBACK_DATA.concerts;
+        document.getElementById("lastCheckText").textContent = `Aktualizace: ${data.updatedAt || "nyní"}`;
       } catch (e) {
         concerts = FALLBACK_DATA.concerts;
+        document.getElementById("lastCheckText").textContent = `Režim náhledu (${FALLBACK_DATA.updatedAt})`;
       }
-
-      await new Promise(r => setTimeout(r, 450));
-      renderAll();
-      box.dataset.hasChecked = "1";
-      box.textContent = t.statusDone(concerts.length);
-      btn.disabled = false;
-    }
-
-    function changeLanguage() {
-      state.lang = document.getElementById("langSelect").value;
-      saveState();
-      applyLanguageTexts();
-      renderAll();
-    }
-
-    function onCountryChange() {
-      state.country = document.getElementById("countrySelect").value;
-      populateCities("");
-      saveState();
       renderAll();
     }
 
     function toggleGenre(g) {
-      if (g === "Vše") {
-        state.selectedGenres = ["Vše"];
-      } else {
-        let next = state.selectedGenres.filter(x => x !== "Vše");
-        if (next.includes(g)) {
-          next = next.filter(x => x !== g);
-        } else {
-          next.push(g);
+      if (state.selectedGenres.includes(g)) {
+        if (state.selectedGenres.length > 1) {
+          state.selectedGenres = state.selectedGenres.filter(x => x !== g);
         }
-        state.selectedGenres = next.length ? next : ["Vše"];
+      } else {
+        state.selectedGenres.push(g);
       }
+      saveState();
+      renderAll();
+    }
+
+    function toggleNeighbor() {
+      state.includeNeighbors = !state.includeNeighbors;
       saveState();
       renderAll();
     }
@@ -985,17 +655,19 @@
     }
 
     function renderAll() {
-      const t = I18N[state.lang] || I18N.cs;
       const newCount = concerts.filter(c => c.isNew).length;
       const btnNew = document.getElementById("btnOnlyNew");
-      btnNew.textContent = t.newFmt(newCount);
+      btnNew.textContent = `${newCount} nových`;
       btnNew.classList.toggle("active", state.onlyNew);
+
+      const btnNeighbor = document.getElementById("btnNeighbor");
+      btnNeighbor.classList.toggle("selected", state.includeNeighbors);
 
       const btnLow = document.getElementById("btnLowPower");
       if (btnLow) btnLow.classList.toggle("selected", state.lowPower);
 
-      const btnFavs = document.getElementById("btnOnlyFavs");
-      if (btnFavs) btnFavs.classList.toggle("selected", state.onlyFavs);
+      const btnFavsMain = document.getElementById("btnOnlyFavsMain");
+      if (btnFavsMain) btnFavsMain.classList.toggle("selected", state.onlyFavs);
 
       const genreBox = document.getElementById("genreChips");
       genreBox.innerHTML = "";
@@ -1017,11 +689,10 @@
         bandsBox.appendChild(chip);
       });
 
-      const allSelected = state.selectedGenres.includes("Vše");
       const filtered = concerts.filter(c => {
         if (state.onlyNew && !c.isNew) return false;
-        if (state.country && c.country && c.country !== state.country) return false;
-        if (!allSelected && state.selectedGenres.length && c.genre && !state.selectedGenres.includes(c.genre)) return false;
+        if (!state.includeNeighbors && c.country && c.country !== "CZ") return false;
+        if (state.selectedGenres.length && c.genre && !state.selectedGenres.includes(c.genre)) return false;
         if (state.onlyFavs && !state.favBands.some(b => b.toLowerCase() === c.band.toLowerCase())) return false;
         const dist = distanceKm(state.city, c.city);
         if (dist > state.radius) return false;
@@ -1031,30 +702,22 @@
       const listEl = document.getElementById("concertsList");
       listEl.innerHTML = "";
       if (!filtered.length) {
-        listEl.innerHTML = `<div class="panel"><div class="meta">${t.noConcerts}</div></div>`;
+        listEl.innerHTML = `<div class="panel"><div class="meta">Žádný koncert neodpovídá zvoleným filtrům.</div></div>`;
       } else {
         filtered.forEach(c => {
           const isFav = state.favBands.some(b => b.toLowerCase() === c.band.toLowerCase());
           const dist = distanceKm(state.city, c.city);
-          const safeBand = (c.band || "").replace(/'/g, "\'");
-          const safeSeller = (c.seller || "").replace(/'/g, "\'");
           const card = document.createElement("div");
           card.className = "concert-card";
-          const posterHtml = c.poster
-            ? `<img class="poster-thumb" src="${c.poster}" alt="${c.band}" loading="eager" />`
-            : "";
           card.innerHTML = `
-            ${posterHtml}
-            <div class="concert-body">
-              <div class="concert-top">
-                <div class="band-name">${c.band}</div>
-                ${c.isNew ? `<span class="badge-new">NOVÉ</span>` : ""}
-              </div>
-              <div class="meta">${c.date} · ${c.venue}, ${c.city} (${c.country || "CZ"}, ~${dist} km) · ${c.genre || "Rock"} · ${c.seller || ""}</div>
-              <div class="card-actions">
-                <a class="btn-ticket" href="${withUtm(c.url || "#")}" target="_blank" rel="noopener" onclick="onTicketClick('${safeBand}', '${safeSeller}')">${t.tickets}</a>
-                <button class="btn-star ${isFav ? "fav" : ""}" onclick="toggleFavBand('${safeBand}')">${isFav ? t.favOn : t.favOff}</button>
-              </div>
+            <div class="concert-top">
+              <div class="band-name">${c.band}</div>
+              ${c.isNew ? `<span class="badge-new">NOVÉ</span>` : ""}
+            </div>
+            <div class="meta">${c.date} · ${c.venue}, ${c.city} (${c.country || "CZ"}, ~${dist} km) · ${c.genre || "Rock"} · ${c.seller || ""}</div>
+            <div class="card-actions">
+              <a class="btn-ticket" href="${withUtm(c.url || "#")}" target="_blank" rel="noopener" onclick="trackClick()">Vstupenky</a>
+              <button class="btn-star ${isFav ? "fav" : ""}" onclick="toggleFavBand('${c.band.replace(/'/g, "\'")}')">${isFav ? "★ Oblíbené" : "☆ Hlídač"}</button>
             </div>
           `;
           listEl.appendChild(card);
@@ -1079,8 +742,7 @@
     }
 
     loadState();
-    sendTelemetry("Otevření aplikace", "", "");
-    runCheck();
+    refreshConcerts(false);
   </script>
 </body>
 </html>
