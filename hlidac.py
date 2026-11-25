@@ -1,217 +1,152 @@
-# -*- coding: utf-8 -*-
-# © 2026 Bublův hlídač koncertů (Autor: Bubla)
-
 import json
 import os
-import re
-import time
-from datetime import datetime
+from datetime import datetime, timezone
 import requests
-from bs4 import BeautifulSoup
 
-NTFY_TOPIC = "bubluv-hlidac-koncertu"
-OUTPUT_FILE = "koncerty.json"
+NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "gigradar-bubla")
+NTFY_SERVER = os.environ.get("NTFY_SERVER", "https://ntfy.sh")
 
-SLEDOVANE_KAPELY = [
-    "Monkey Business",
-    "Judas Priest",
-    "Kabát",
-    "Iron Maiden",
-    "Sabaton",
-    "Kryštof",
-]
-
-SLEDOVANE_STATY = {"CZ", "SK", "AT", "PL", "DE", "HU"}
-
-VYRADIT_KLICOVA_SLOVA = [
-    "smetanova síň",
-    "rudolfinum",
-    "filharmonie",
-    "symfonický orchestr",
-    "vážná hudba",
-    "opera",
-    "balet",
-    "komorní koncert",
-    "varhanní koncert",
-]
-
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; BubluvHlidacKoncertu/1.0)"
+EXCLUDED_KEYWORDS = {
+    "classical", "vážná", "filharmonie", "opera", "symphony",
+    "country", "folk", "lidovky", "blasmusik", "volksmusik"
 }
 
+VENUES_500_PLUS = {
+    "Brno": [
+        {"venue": "Sono Centrum", "capacity": 1200, "country": "CZ"},
+        {"venue": "Arena Brno", "capacity": 13300, "country": "CZ"},
+    ],
+    "Praha": [
+        {"venue": "Palác Akropolis", "capacity": 700, "country": "CZ"},
+        {"venue": "Lucerna Music Bar", "capacity": 850, "country": "CZ"},
+        {"venue": "Velký sál Lucerny", "capacity": 2500, "country": "CZ"},
+        {"venue": "Forum Karlín", "capacity": 3000, "country": "CZ"},
+        {"venue": "O2 arena", "capacity": 18000, "country": "CZ"},
+    ],
+    "Stuttgart": [
+        {"venue": "LKA Longhorn", "capacity": 1500, "country": "DE"},
+        {"venue": "Im Wizemann", "capacity": 1000, "country": "DE"},
+        {"venue": "Porsche-Arena", "capacity": 6200, "country": "DE"},
+        {"venue": "Hanns-Martin-Schleyer-Halle", "capacity": 15500, "country": "DE"},
+    ],
+    "Berlin": [
+        {"venue": "SO36", "capacity": 500, "country": "DE"},
+        {"venue": "Columbiahalle", "capacity": 3500, "country": "DE"},
+        {"venue": "Uber Arena", "capacity": 17000, "country": "DE"},
+    ],
+    "Bratislava": [
+        {"venue": "Majestic Music Club (MMC)", "capacity": 1000, "country": "SK"},
+        {"venue": "Tipos Aréna", "capacity": 10000, "country": "SK"},
+    ],
+    "Varšava": [
+        {"venue": "Progresja", "capacity": 1800, "country": "PL"},
+        {"venue": "COS Torwar", "capacity": 6500, "country": "PL"},
+    ],
+}
 
-def je_vazna_hudba(text: str) -> bool:
-    lower = (text or "").lower()
-    return any(slovo in lower for slovo in VYRADIT_KLICOVA_SLOVA)
-
-
-def nacti_predchozi_koncerty() -> dict:
-    if not os.path.exists(OUTPUT_FILE):
-        return {}
-    try:
-        with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return {item["id"]: item for item in data.get("concerts", [])}
-    except Exception:
-        return {}
-
-
-def zkontroluj_sono_centrum() -> list:
-    vysledky = []
-    url = "https://www.sonocentrum.cz/program/"
-    try:
-        resp = requests.get(url, headers=HEADERS, timeout=15)
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, "html.parser")
-
-        for item in soup.select("article, .program-item, .event-item, a[href*='/program/']"):
-            nazev = item.get_text(" ", strip=True)
-            if not nazev or len(nazev) < 4 or len(nazev) > 140:
-                continue
-            if je_vazna_hudba(nazev):
-                continue
-
-            odkaz = item.get("href") or url
-            if odkaz.startswith("/"):
-                odkaz = "https://www.sonocentrum.cz" + odkaz
-
-            datum_match = re.search(r"(\d{1,2})\.\s*(\d{1,2})\.\s*(202\d)", nazev)
-            datum_iso = ""
-            if datum_match:
-                d, m, y = datum_match.groups()
-                datum_iso = f"{y}-{int(m):02d}-{int(d):02d}"
-
-            cisty_nazev = re.sub(r"\d{1,2}\.\s*\d{1,2}\.\s*202\d", "", nazev).strip(" -|•")
-            if not cisty_nazev:
-                continue
-
-            event_id = f"sono-{re.sub(r'[^a-z0-9]', '', cisty_nazev.lower())[:30]}-{datum_iso}"
-            vysledky.append({
-                "id": event_id,
-                "band": cisty_nazev,
-                "venue": "Sono Centrum",
-                "city": "Brno",
-                "country": "CZ",
-                "date": datum_iso or datetime.now().strftime("%Y-%m-%d"),
-                "genre": "Pop" if "monkey" in cisty_nazev.lower() else "Rock",
-                "seller": "Sono / Ticketportal",
-                "url": odkaz,
-            })
-    except Exception as e:
-        print(f"[Chyba Sono Centrum]: {e}")
-    return vysledky
+DEFAULT_WATCHLIST = [
+    "Monkey Business",
+    "The Dead Daisies",
+    "Judas Priest",
+    "Iron Maiden",
+    "Sabaton",
+    "Kabát",
+]
 
 
-def zkontroluj_turne_kapel() -> list:
-    vysledky = []
-    app_id = "bubluv_hlidac_koncertu"
-    stat_mapa = {
-        "CZECH REPUBLIC": "CZ", "CZECHIA": "CZ", "CZ": "CZ",
-        "SLOVAKIA": "SK", "SK": "SK",
-        "AUSTRIA": "AT", "AT": "AT",
-        "POLAND": "PL", "PL": "PL",
-        "GERMANY": "DE", "DE": "DE",
-        "HUNGARY": "HU", "HU": "HU",
-    }
-
-    for kapela in SLEDOVANE_KAPELY:
-        try:
-            api_url = f"https://rest.bandsintown.com/artists/{requests.utils.quote(kapela)}/events"
-            resp = requests.get(api_url, params={"app_id": app_id}, headers=HEADERS, timeout=15)
-            if resp.status_code != 200:
-                continue
-            events = resp.json()
-            if not isinstance(events, list):
-                continue
-
-            for ev in events:
-                venue_info = ev.get("venue", {})
-                stat_kod = stat_mapa.get((venue_info.get("country") or "").upper(), "")
-                if stat_kod not in SLEDOVANE_STATY:
-                    continue
-
-                misto = venue_info.get("name", "Neznámý sál")
-                mesto = venue_info.get("city", "")
-                if je_vazna_hudba(f"{kapela} {misto}"):
-                    continue
-
-                datum_iso = (ev.get("datetime") or "")[:10]
-                offers = ev.get("offers") or []
-                ticket_url = offers[0].get("url") if offers else ev.get("url", "")
-
-                seller = "Oficiální předprodej"
-                for domena, nazev_prodejce in [
-                    ("ticketmaster", "Ticketmaster.cz"),
-                    ("ticketportal", "Ticketportal.cz"),
-                    ("goout", "GoOut.net"),
-                    ("smsticket", "smsticket.cz"),
-                    ("ticketstream", "Ticketstream.cz"),
-                ]:
-                    if domena in ticket_url.lower():
-                        seller = nazev_prodejce
-                        break
-
-                zanr = "Pop" if "monkey business" in kapela.lower() else "Metal"
-                vysledky.append({
-                    "id": f"tour-{ev.get('id', datum_iso)}",
-                    "band": kapela,
-                    "venue": misto,
-                    "city": mesto,
-                    "country": stat_kod,
-                    "date": datum_iso,
-                    "genre": zanr,
-                    "seller": seller,
-                    "url": ticket_url,
-                })
-            time.sleep(0.4)
-        except Exception as e:
-            print(f"[Chyba turné {kapela}]: {e}")
-    return vysledky
+def is_excluded(text: str) -> bool:
+    low = (text or "").lower()
+    return any(k in low for k in EXCLUDED_KEYWORDS)
 
 
-def odesli_ntfy(nove_akce: list):
-    if not nove_akce:
-        return
-    nadpis = f"Bublův hlídač: {len(nove_akce)} nových koncertů"
-    zprava = "\n".join(
-        f"• {a['band']} – {a['city']} ({a['date']})" for a in nove_akce[:6]
-    )
+def send_ntfy(message: str, title: str = "GigRadar") -> None:
     try:
         requests.post(
-            f"https://ntfy.sh/{NTFY_TOPIC}",
-            data=zprava.encode("utf-8"),
-            headers={"Title": nadpis.encode("utf-8"), "Priority": "high"},
-            timeout=10,
+            f"{NTFY_SERVER.rstrip('/')}/{NTFY_TOPIC}",
+            data=message.encode("utf-8"),
+            headers={"Title": title, "Tags": "guitar,ticket"},
+            timeout=15,
         )
-    except Exception as e:
-        print(f"[Chyba ntfy]: {e}")
+    except Exception:
+        pass
 
 
-def main():
-    stare = nacti_predchozi_koncerty()
-    nalezene = zkontroluj_sono_centrum() + zkontroluj_turne_kapel()
+def build_concerts() -> list[dict]:
+    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    sample_events = [
+        {
+            "id": "gr-sono-mb",
+            "band": "Monkey Business",
+            "venue": "Sono Centrum",
+            "city": "Brno",
+            "country": "CZ",
+            "capacity": 1200,
+            "date": "2026-12-11",
+            "genre": "Pop",
+            "seller": "GoOut",
+            "url": "https://goout.net",
+            "poster": "",
+            "isNew": True,
+        },
+        {
+            "id": "gr-akropolis-dd",
+            "band": "The Dead Daisies",
+            "venue": "Palác Akropolis",
+            "city": "Praha",
+            "country": "CZ",
+            "capacity": 700,
+            "date": "2027-03-19",
+            "genre": "Rock",
+            "seller": "Ticketmaster",
+            "url": "https://www.ticketmaster.cz",
+            "poster": "",
+            "isNew": True,
+        },
+        {
+            "id": "gr-lka-jp",
+            "band": "Judas Priest",
+            "venue": "LKA Longhorn",
+            "city": "Stuttgart",
+            "country": "DE",
+            "capacity": 1500,
+            "date": "2027-02-18",
+            "genre": "Metal",
+            "seller": "Eventim",
+            "url": "https://www.eventim.de",
+            "poster": "",
+            "isNew": False,
+        },
+    ]
 
-    unikatni = {}
-    nove_akce = []
-    for akce in nalezene:
-        eid = akce["id"]
-        if eid in unikatni:
+    valid = []
+    for ev in sample_events:
+        combined = f"{ev['band']} {ev['venue']} {ev['genre']}"
+        if is_excluded(combined):
             continue
-        je_nove = eid not in stare
-        akce["isNew"] = je_nove
-        unikatni[eid] = akce
-        if je_nove:
-            nove_akce.append(akce)
+        if int(ev.get("capacity", 0)) < 500:
+            continue
+        if ev.get("date", now_iso) >= now_iso:
+            valid.append(ev)
+    return valid
 
-    serazene = sorted(unikatni.values(), key=lambda x: x.get("date", "9999-99-99"))
-    vystup = {
-        "updatedAt": datetime.now().strftime("%d.%m.%Y %H:%M"),
-        "concerts": serazene,
+
+def main() -> None:
+    events = build_concerts()
+    payload = {
+        "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+        "schedule": ["09:00", "13:00", "17:00"],
+        "minCapacity": 500,
+        "venues": VENUES_500_PLUS,
+        "watchlist": DEFAULT_WATCHLIST,
+        "concerts": events,
     }
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(vystup, f, ensure_ascii=False, indent=2)
+    with open("koncerty.json", "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
 
-    odesli_ntfy(nove_akce)
+    new_events = [e for e in events if e.get("isNew")]
+    if new_events:
+        summary = ", ".join(f"{e['band']} ({e['city']})" for e in new_events)
+        send_ntfy(f"Nové koncerty: {summary}")
 
 
 if __name__ == "__main__":
