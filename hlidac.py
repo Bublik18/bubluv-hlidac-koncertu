@@ -26,7 +26,7 @@ SLEDOVANE_KAPELY = [
     "Tři sestry",
 ]
 
-SLEDOVANE_STATY = {"CZ", "SK", "AT", "PL", "DE", "HU"}
+SLEDOVANE_STATY = {"CZ", "SK", "AT", "PL", "DE"}
 
 VYRADIT_KLICOVA_SLOVA = [
     "smetanova síň",
@@ -85,6 +85,11 @@ def zkontroluj_sono_centrum() -> list:
             if odkaz.startswith("/"):
                 odkaz = "https://www.sonocentrum.cz" + odkaz
 
+            img = item.find("img")
+            poster = img.get("src") if img and img.get("src") else "icon-192.png"
+            if poster.startswith("/"):
+                poster = "https://www.sonocentrum.cz" + poster
+
             datum_match = re.search(r"(\d{1,2})\.\s*(\d{1,2})\.\s*(202\d)", nazev)
             datum_iso = ""
             if datum_match:
@@ -107,6 +112,7 @@ def zkontroluj_sono_centrum() -> list:
                 "genre": "Pop" if "monkey" in cisty_nazev.lower() else "Rock",
                 "seller": "Sono / Ticketportal",
                 "url": odkaz,
+                "poster": poster,
             })
     except Exception as e:
         print(f"[Chyba Sono Centrum]: {e}")
@@ -122,7 +128,6 @@ def zkontroluj_turne_kapel() -> list:
         "AUSTRIA": "AT", "AT": "AT",
         "POLAND": "PL", "PL": "PL",
         "GERMANY": "DE", "DE": "DE",
-        "HUNGARY": "HU", "HU": "HU",
     }
 
     for kapela in SLEDOVANE_KAPELY:
@@ -149,6 +154,8 @@ def zkontroluj_turne_kapel() -> list:
                 datum_iso = (ev.get("datetime") or "")[:10]
                 offers = ev.get("offers") or []
                 ticket_url = offers[0].get("url") if offers else ev.get("url", "")
+                artist_info = ev.get("artist") or {}
+                poster = artist_info.get("thumb_url") or artist_info.get("image_url") or "icon-192.png"
 
                 seller = "Oficiální předprodej"
                 for domena, nazev_prodejce in [
@@ -174,6 +181,7 @@ def zkontroluj_turne_kapel() -> list:
                     "genre": zanr,
                     "seller": seller,
                     "url": ticket_url,
+                    "poster": poster,
                 })
             time.sleep(0.4)
         except Exception as e:

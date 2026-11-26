@@ -1,9 +1,9 @@
-name: GigRadar - kontrola 3x denne
+name: GigRadar - kontrola kazde 2 hodiny
 
 on:
   schedule:
-    # Spouští se 3x denně v 9:00, 13:00 a 17:00 SEČ (8:00, 12:00 a 16:00 UTC)
-    - cron: '0 8,12,16 * * *'
+    # Spouští se každé 2 hodiny (0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22 UTC)
+    - cron: '0 */2 * * *'
   workflow_dispatch:
 
 permissions:
