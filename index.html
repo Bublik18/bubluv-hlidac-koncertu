@@ -351,6 +351,45 @@
       background: rgba(125, 211, 252, 0.14);
     }
 
+    .check-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .check-progress-track {
+      width: 68px;
+      height: 2mm;
+      min-height: 2px;
+      max-height: 2px;
+      background: rgba(125, 211, 252, 0.22);
+      border-radius: 999px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .check-progress-bar {
+      width: 0%;
+      height: 100%;
+      background: var(--light-blue-soft);
+      box-shadow: 0 0 8px rgba(125, 211, 252, 0.8);
+      transition: width 0.25s ease;
+    }
+
+    .search-heading {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--light-blue-soft);
+      margin-bottom: 3px;
+    }
+
+    .search-intro {
+      font-size: 0.78rem;
+      color: var(--light-blue);
+      margin-bottom: 9px;
+      line-height: 1.35;
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -374,12 +413,20 @@
           <button id="btnOnlyNew" class="btn-new" onclick="toggleOnlyNew()">0 nových</button>
         </div>
         <div class="header-row-3">
-          <span id="lastCheckText">Poslední kontrola: načítám...</span>
-          <button id="btnCheck" class="btn-check" onclick="refreshConcerts(true)">Zkontrolovat</button>
+          <div class="check-left">
+            <button id="btnCheck" class="btn-check" onclick="refreshConcerts(true)">Zkontrolovat</button>
+            <div id="checkProgressTrack" class="check-progress-track" aria-hidden="true">
+              <div id="checkProgressBar" class="check-progress-bar"></div>
+            </div>
+          </div>
+          <span id="lastCheckText">Připraveno</span>
         </div>
       </header>
 
       <div class="panel">
+        <div class="search-heading" id="lblSearchHeading">Vyhledávání</div>
+        <p class="search-intro" id="lblSearchIntro">Vyber žánr, zemi a město nebo zapni oblíbené kapely pro vyhledání koncertů.</p>
+
         <div class="panel-title" id="lblGenres">Žánry</div>
         <div class="chips" id="genreChips"></div>
 
@@ -387,12 +434,10 @@
         <div class="controls-row">
           <select id="countrySelect" onchange="onCountryChange()"></select>
           <select id="citySelect" onchange="saveAndRender()"></select>
-          <select id="radiusSelect" onchange="saveAndRender()">
-            <option value="9999">Všechny vzdálenosti</option>
-            <option value="50">Do 50 km</option>
-            <option value="100">Do 100 km</option>
-            <option value="200">Do 200 km</option>
-          </select>
+        </div>
+
+        <div class="panel-title" id="lblFavsSection" style="margin-top: 8px;">Moje oblíbené kapely</div>
+        <div class="controls-row">
           <button id="btnOnlyFavsMain" class="chip" onclick="toggleOnlyFavs()">★ Moje oblíbené kapely</button>
         </div>
       </div>
@@ -447,7 +492,7 @@
   <script>
     const I18N = {
       cs: {
-        newSuffix: "nových",
+        newSuffix: "nové",
         check: "Zkontrolovat",
         genres: "Žánry",
         location: "Země a město",
@@ -467,7 +512,7 @@
         countries: { CZ: "Česko", SK: "Slovensko", DE: "Německo", PL: "Polsko", AT: "Rakousko" }
       },
       sk: {
-        newSuffix: "nových",
+        newSuffix: "nové",
         check: "Skontrolovať",
         genres: "Žánre",
         location: "Krajina a mesto",
@@ -527,7 +572,7 @@
         countries: { CZ: "Tschechien", SK: "Slowakei", DE: "Deutschland", PL: "Polen", AT: "Österreich" }
       },
       pl: {
-        newSuffix: "nowych",
+        newSuffix: "nowe",
         check: "Sprawdź",
         genres: "Gatunki",
         location: "Kraj i miasto",
@@ -555,11 +600,11 @@
     };
 
     const CITIES_BY_COUNTRY = {
-      CZ: ["Praha", "Brno", "Ostrava", "Olomouc", "Plzeň"],
-      SK: ["Bratislava", "Košice", "Žilina", "Banská Bystrica", "Nitra"],
-      DE: ["Berlín", "Mnichov", "Stuttgart", "Hamburk", "Frankfurt"],
-      PL: ["Varšava", "Krakov", "Vratislav", "Poznaň", "Katovice"],
-      AT: ["Vídeň", "Linec", "Štýrský Hradec", "Salcburk", "Innsbruck"]
+      CZ: ["Praha", "Brno", "Ostrava", "Plzeň", "Olomouc", "Hradec Králové", "Pardubice", "Jihlava"],
+      SK: ["Bratislava", "Košice", "Prešov", "Žilina", "Banská Bystrica", "Nitra", "Trnava", "Trenčín"],
+      DE: ["Berlín", "Mnichov", "Stuttgart", "Hamburk", "Frankfurt", "Kolín nad Rýnem", "Lipsko", "Bonn"],
+      PL: ["Varšava", "Krakov", "Vratislav", "Poznaň", "Gdaňsk", "Katovice", "Lodž", "Štětín"],
+      AT: ["Vídeň", "Linec", "Štýrský Hradec", "Salcburk", "Innsbruck", "Klagenfurt", "St. Pölten", "Bregenz"]
     };
 
     const CITY_COORDS = {
@@ -587,7 +632,22 @@
       "Linec": [48.3069, 14.2858],
       "Štýrský Hradec": [47.0707, 15.4395],
       "Salcburk": [47.8095, 13.0550],
-      "Innsbruck": [47.2692, 11.4041]
+      "Innsbruck": [47.2692, 11.4041],
+      "Hradec Králové": [50.2104, 15.8252],
+      "Pardubice": [50.0343, 15.7812],
+      "Jihlava": [49.3961, 15.5912],
+      "Prešov": [48.9984, 21.2339],
+      "Trnava": [48.3774, 17.5883],
+      "Trenčín": [48.8945, 18.0444],
+      "Kolín nad Rýnem": [50.9375, 6.9603],
+      "Lipsko": [51.3397, 12.3731],
+      "Bonn": [50.7374, 7.0982],
+      "Gdaňsk": [54.3520, 18.6466],
+      "Lodž": [51.7592, 19.4560],
+      "Štětín": [53.4285, 14.5528],
+      "Klagenfurt": [46.6247, 14.3053],
+      "St. Pölten": [48.2047, 15.6256],
+      "Bregenz": [47.5031, 9.7471]
     };
 
     const GENRES = ["Rock", "Metal", "Pop", "Rap", "Hip hop"];
@@ -704,10 +764,7 @@
       document.getElementById("nav-bands").textContent = t.navBands;
       document.getElementById("nav-settings").textContent = t.navSettings;
 
-      const radSel = document.getElementById("radiusSelect");
-      if (radSel && radSel.options.length) {
-        radSel.options[0].textContent = t.allDistances;
-      }
+
 
       populateCountrySelect();
       populateCitySelect();
@@ -721,7 +778,7 @@
       if (!I18N[state.lang]) state.lang = "cs";
       if (!CITIES_BY_COUNTRY[state.country]) state.country = "CZ";
       document.getElementById("langSelect").value = state.lang;
-      document.getElementById("radiusSelect").value = String(state.radius);
+      
       document.getElementById("clickCounter").textContent = state.clicks;
       applyTranslations();
     }
@@ -778,6 +835,12 @@
     }
 
     async function refreshConcerts(playBeep = false) {
+      const bar = document.getElementById("checkProgressBar");
+      const statusEl = document.getElementById("lastCheckText");
+      let pct = 15;
+      if (bar) bar.style.width = pct + "%";
+      if (statusEl) statusEl.textContent = "Kontroluji...";
+
       if (playBeep) {
         try {
           const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -789,15 +852,26 @@
         } catch (e) {}
       }
 
+      const timer = setInterval(() => {
+        pct = Math.min(88, pct + 18);
+        if (bar) bar.style.width = pct + "%";
+      }, 110);
+
       try {
         const res = await fetch("koncerty.json?t=" + Date.now());
         if (!res.ok) throw new Error("No JSON");
         const data = await res.json();
         concerts = Array.isArray(data.concerts) && data.concerts.length ? data.concerts : FALLBACK_DATA.concerts;
-        document.getElementById("lastCheckText").textContent = `Aktualizace: ${data.updatedAt || "nyní"}`;
+        if (statusEl) statusEl.textContent = "Hotovo";
       } catch (e) {
         concerts = FALLBACK_DATA.concerts;
-        document.getElementById("lastCheckText").textContent = `Režim náhledu (${FALLBACK_DATA.updatedAt})`;
+        if (statusEl) statusEl.textContent = "Hotovo";
+      } finally {
+        clearInterval(timer);
+        if (bar) bar.style.width = "100%";
+        setTimeout(() => {
+          if (bar) bar.style.width = "0%";
+        }, 700);
       }
       renderAll();
     }
@@ -856,7 +930,7 @@
     function saveAndRender() {
       state.country = document.getElementById("countrySelect").value;
       state.city = document.getElementById("citySelect").value;
-      state.radius = Number(document.getElementById("radiusSelect").value);
+
       saveState();
       renderAll();
     }
