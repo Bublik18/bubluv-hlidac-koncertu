@@ -1,7 +1,20 @@
 {
-  "updatedAt": "27.11.2026 11:33",
-  "newCount": 13,
+  "updatedAt": "27.11.2026 12:58",
+  "newCount": 2,
   "concerts": [
+    {
+      "id": "news-mikaoslavvbrndvacetletodvydnvele-2026-11-27",
+      "band": "Mika oslaví v Brně dvacet let od vydání veleúspěšného debutu \"Life In Cartoon Motion\"",
+      "venue": "Musicserver.cz",
+      "city": "Ostrava",
+      "country": "CZ",
+      "date": "2026-11-27",
+      "genre": "Pop",
+      "seller": "Musicserver.cz",
+      "url": "https://musicserver.cz/clanek/80426/mika-oslavi-v-brne-dvacet-let-od-vydani-veleuspesneho-debutu-life-in-cartoon-motion/",
+      "poster": "https://musicserver.cz/img/202221hp.jpg",
+      "isNew": true
+    },
     {
       "id": "news-prahuekthrashovkoncertrokuanthra-2026-11-27",
       "band": "Prahu čeká thrashový koncert roku. Anthrax, Kerry King a Sacred Reich v dubnu zmasakrují Forum Karlín",
@@ -13,7 +26,7 @@
       "seller": "Musicserver.cz",
       "url": "https://musicserver.cz/clanek/80408/prahu-ceka-thrashovy-koncert-roku-anthrax-kerry-king-a-sacred-reich-v-dubnu-zmasakruji-forum-karlin/",
       "poster": "https://musicserver.cz/img/209380hp.jpg",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-naivozaklnavo2universugeraltveva-2026-11-27",
@@ -26,7 +39,7 @@
       "seller": "Musicserver.cz",
       "url": "https://musicserver.cz/clanek/80417/the-witcher-iii-in-concert-o2-universum-praha-25-11-2026/",
       "poster": "https://musicserver.cz/img/247329hp.jpg",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-colorfactorysevrtilipotm30letech-2026-11-27",
@@ -39,7 +52,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/fotoreporty/colorfactory-se-vratili-po-temer-30-letech-na-scenu-v-brne-si-s-nimi-zpivala-cela-fleda",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-nacosetitvprosincimonkeybusiness-2026-11-27",
@@ -52,7 +65,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/clanky/style/na-co-se-tesit-v-prosinci-monkey-business-vyrazi-na-turne-michal-prokop-oslavi-osmdesate-narozeniny-a-david-koller-ucti-pamatku-karla-kryla",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-mig21roztaniliprasklucernamusicb-2026-11-27",
@@ -65,7 +78,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/fotoreporty/mig-21-roztancili-vyprodany-lucerna-music-bar-vyprodali-ho-trikrat-za-sebou",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-livepokpivezldoprasklucernyignor-2026-11-27",
@@ -78,7 +91,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/clanky/recenze/live-pokac-privezl-do-prazske-lucerny-ignor-tour-nechybel-humor-ukulele-ani-osobni-vzpominky",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-europeoslavilivostrav40vrothefin-2026-11-27",
@@ -91,7 +104,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/fotoreporty/europe-oslavili-v-ostrave-40-vyroci-the-final-countdown-na-megakoncertu-radia-cas-vystoupili-i-david-koller-ci-olympic",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-livekdypotebujebreetamoshovatzro-2026-11-27",
@@ -104,6 +117,19 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/clanky/recenze/live-kdyz-potrebujes-brecet-a-moshovat-zaroven-currents-a-erra-v-lucerna-music-baru",
       "poster": "",
+      "isNew": false
+    },
+    {
+      "id": "news-thrashmetalovkoncertrokudoprahym-2026-11-27",
+      "band": "Thrashmetalový koncert roku: do Prahy míří Anthrax, Kerry King a Sacred Reich",
+      "venue": "Fakker!",
+      "city": "Praha",
+      "country": "CZ",
+      "date": "2026-11-27",
+      "genre": "Metal",
+      "seller": "Fakker!",
+      "url": "http://fakker.cz/clanek/17988/thrashmetalovy-koncert-roku-do-prahy-miri-anthrax-kerry-king-a-sacred-reich/",
+      "poster": "http://fakker.cz/img/0.jpg",
       "isNew": true
     },
     {
@@ -117,7 +143,7 @@
       "seller": "Fakker!",
       "url": "http://fakker.cz/clanek/17982/papa-roach-sleep-theory-landmvrks-praha-24-11-2026/",
       "poster": "http://fakker.cz/img/0.jpg",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-frankcarterkonusexpistols-2026-11-27",
@@ -130,7 +156,7 @@
       "seller": "Fakker!",
       "url": "http://fakker.cz/clanek/17985/frank-carter-konci-u-sex-pistols/",
       "poster": "http://fakker.cz/img/0.jpg",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-mastodonmdobrnanajae2027pivezoud-2026-11-27",
@@ -143,33 +169,7 @@
       "seller": "Fakker!",
       "url": "http://fakker.cz/clanek/17981/mastodon-miri-do-brna-na-jare-2027-privezou-do-sono-centra-novou-desku-a-posilu-monolord/",
       "poster": "http://fakker.cz/img/0.jpg",
-      "isNew": true
-    },
-    {
-      "id": "news-twentyonepilotsuzavrajmonumentln-2026-11-27",
-      "band": "Twenty One Pilots uzavírají monumentální éru živákem „Supercycle“. Chystají i exkluzivní stream z Londýna",
-      "venue": "Fakker!",
-      "city": "Praha",
-      "country": "CZ",
-      "date": "2026-11-27",
-      "genre": "Metal",
-      "seller": "Fakker!",
-      "url": "http://fakker.cz/clanek/17980/twenty-one-pilots-uzaviraji-monumentalni-eru-zivakem-supercycle-chystaji-i-exkluzivni-stream-z-londyna/",
-      "poster": "http://fakker.cz/img/0.jpg",
-      "isNew": true
-    },
-    {
-      "id": "news-tahlejepromosheryguilttripvypust-2026-11-27",
-      "band": "Tahle je pro moshery! Guilt Trip vypustili do světa brutální studiovou předělávku kultovní pecky „Davidian“ od",
-      "venue": "Fakker!",
-      "city": "Praha",
-      "country": "CZ",
-      "date": "2026-11-27",
-      "genre": "Metal",
-      "seller": "Fakker!",
-      "url": "http://fakker.cz/clanek/17978/tahle-je-pro-moshery-guilt-trip-vypustili-do-sveta-brutalni-studiovou-predelavku-kultovni-pecky-davidian-od-machine-head/",
-      "poster": "http://fakker.cz/img/0.jpg",
-      "isNew": true
+      "isNew": false
     }
   ]
 }
