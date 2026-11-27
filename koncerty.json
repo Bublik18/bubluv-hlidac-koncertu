@@ -1,6 +1,6 @@
 {
-  "updatedAt": "27.11.2026 12:58",
-  "newCount": 2,
+  "updatedAt": "27.11.2026 14:45",
+  "newCount": 0,
   "concerts": [
     {
       "id": "news-mikaoslavvbrndvacetletodvydnvele-2026-11-27",
@@ -13,7 +13,7 @@
       "seller": "Musicserver.cz",
       "url": "https://musicserver.cz/clanek/80426/mika-oslavi-v-brne-dvacet-let-od-vydani-veleuspesneho-debutu-life-in-cartoon-motion/",
       "poster": "https://musicserver.cz/img/202221hp.jpg",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-prahuekthrashovkoncertrokuanthra-2026-11-27",
@@ -26,19 +26,6 @@
       "seller": "Musicserver.cz",
       "url": "https://musicserver.cz/clanek/80408/prahu-ceka-thrashovy-koncert-roku-anthrax-kerry-king-a-sacred-reich-v-dubnu-zmasakruji-forum-karlin/",
       "poster": "https://musicserver.cz/img/209380hp.jpg",
-      "isNew": false
-    },
-    {
-      "id": "news-naivozaklnavo2universugeraltveva-2026-11-27",
-      "band": "NAžIVO: \"Zaklínač\" v O2 universu: Geralt ve vaně a hudba, která má vlastní krev",
-      "venue": "Musicserver.cz",
-      "city": "Praha",
-      "country": "CZ",
-      "date": "2026-11-27",
-      "genre": "Pop",
-      "seller": "Musicserver.cz",
-      "url": "https://musicserver.cz/clanek/80417/the-witcher-iii-in-concert-o2-universum-praha-25-11-2026/",
-      "poster": "https://musicserver.cz/img/247329hp.jpg",
       "isNew": false
     },
     {
@@ -130,7 +117,7 @@
       "seller": "Fakker!",
       "url": "http://fakker.cz/clanek/17988/thrashmetalovy-koncert-roku-do-prahy-miri-anthrax-kerry-king-a-sacred-reich/",
       "poster": "http://fakker.cz/img/0.jpg",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-liveriseoftheroachvprazepaparoac-2026-11-27",
