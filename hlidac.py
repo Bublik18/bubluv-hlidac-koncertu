@@ -5,6 +5,7 @@ import json
 import os
 import re
 import time
+import xml.etree.ElementTree as ET
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
@@ -15,22 +16,51 @@ from bs4 import BeautifulSoup
 NTFY_TOPIC = "bubluv-hlidac-koncertu"
 OUTPUT_FILE = "koncerty.json"
 
-# Testovací seznam kapel (2 zkušební CZ/SK + pár světových stálic)
-SLEDOVANE_KAPELY = [
-    "Škwor",
-    "MIG 21",
-    "Iron Maiden",
-    "Judas Priest",
-    "Metallica",
-    "Sabaton",
-    "Monkey Business",
+# České hudební magazíny a koncertní novinky (RSS / články)
+CZ_HUDOBNI_WEBY = [
+    {
+        "name": "Spark Rock Magazine",
+        "rss": "https://www.spark-rockmagazine.cz/rss",
+        "web": "https://www.spark-rockmagazine.cz/novinky",
+        "genre": "Metal",
+    },
+    {
+        "name": "Headliner",
+        "rss": "https://www.headliner.cz/rss",
+        "web": "https://www.headliner.cz/novinky",
+        "genre": "Rock",
+    },
+    {
+        "name": "Musicserver.cz",
+        "rss": "https://musicserver.cz/rss/",
+        "web": "https://musicserver.cz/novinky/",
+        "genre": "Pop",
+    },
+    {
+        "name": "iREPORT.cz",
+        "rss": "https://www.ireport.cz/feed",
+        "web": "https://www.ireport.cz/clanky/novinky",
+        "genre": "Rock",
+    },
+    {
+        "name": "Fakker!",
+        "rss": "https://fakker.cz/rss",
+        "web": "https://fakker.cz/clanky",
+        "genre": "Metal",
+    },
 ]
 
-SLEDOVANE_STATY = {"CZ", "SK", "AT", "PL", "DE"}
+KONCERTNI_KLICOVA_SLOVA = [
+    "koncert", "koncerty", "vystoupí", "přijede", "přijedou", "turné", "tour",
+    "o2 arena", "o2 universum", "forum karlín", "sono", "fléda", "lucerna",
+    "roxy", "eden", "letňany", "ostravar", "praha", "brno", "ostrava",
+    "plzeň", "bratislava", "vídeň", "vstupenky", "předprodej", "open air",
+]
 
 VYRADIT_SLOVA = [
     "smetanova síň", "rudolfinum", "filharmonie", "symfonický orchestr",
-    "vážná hudba", "opera", "balet", "komorní koncert", "country", "dechovka"
+    "vážná hudba", "opera", "balet", "komorní koncert", "country", "dechovka",
+    "zemřel", "zemřela", "úmrtí", "recenze alba", "nový klip", "videoklip"
 ]
 
 HEADERS = {
@@ -39,17 +69,76 @@ HEADERS = {
 }
 
 
-def je_nevhodny_zanr(text: str) -> bool:
+def je_nevhodne(text: str) -> bool:
     lower = (text or "").lower()
-    return any(slovo in lower for slovo in VYRADIT_SLOVA)
+    return any(s in lower for s in VYRADIT_SLOVA)
 
 
-def parsuj_datum_cz(text: str) -> str:
-    m = re.search(r"(\d{1,2})\.\s*(\d{1,2})\.\s*(202\d)", text or "")
-    if m:
-        d, mes, r = m.groups()
+def je_koncertni_zprava(text: str) -> bool:
+    lower = (text or "").lower()
+    if je_nevhodne(lower):
+        return False
+    return any(k in lower for k in KONCERTNI_KLICOVA_SLOVA)
+
+
+def parsuj_datum(text: str) -> str:
+    m_cz = re.search(r"(\d{1,2})\.\s*(\d{1,2})\.\s*(202\d)", text or "")
+    if m_cz:
+        d, mes, r = m_cz.groups()
         return f"{r}-{int(mes):02d}-{int(d):02d}"
-    return ""
+    m_iso = re.search(r"(202\d)-(\d{2})-(\d{2})", text or "")
+    if m_iso:
+        return m_iso.group(0)
+    return datetime.now().strftime("%Y-%m-%d")
+
+
+def urci_mesto_a_stat(text: str) -> tuple:
+    lower = (text or "").lower()
+    mesta = [
+        ("brno", "Brno", "CZ"),
+        ("sono", "Brno", "CZ"),
+        ("fléda", "Brno", "CZ"),
+        ("ostrava", "Ostrava", "CZ"),
+        ("ostravar", "Ostrava", "CZ"),
+        ("plzeň", "Plzeň", "CZ"),
+        ("plzni", "Plzeň", "CZ"),
+        ("olomouc", "Olomouc", "CZ"),
+        ("zlín", "Zlín", "CZ"),
+        ("vizovice", "Vizovice", "CZ"),
+        ("pardubice", "Pardubice", "CZ"),
+        ("hradec králové", "Hradec Králové", "CZ"),
+        ("jihlava", "Jihlava", "CZ"),
+        ("bratislava", "Bratislava", "SK"),
+        ("košice", "Košice", "SK"),
+        ("vídeň", "Vídeň", "AT"),
+        ("vídni", "Vídeň", "AT"),
+        ("varšava", "Varšava", "PL"),
+        ("krakov", "Krakov", "PL"),
+        ("berlín", "Berlín", "DE"),
+        ("mnichov", "Mnichov", "DE"),
+        ("praha", "Praha", "CZ"),
+        ("praze", "Praha", "CZ"),
+        ("o2 arena", "Praha", "CZ"),
+        ("forum karlín", "Praha", "CZ"),
+        ("lucerna", "Praha", "CZ"),
+        ("roxy", "Praha", "CZ"),
+        ("letňany", "Praha", "CZ"),
+    ]
+    for klic, mesto, stat in mesta:
+        if klic in lower:
+            return mesto, stat
+    return "Praha", "CZ"
+
+
+def odhadni_zanr(text: str, vychozi: str = "Rock") -> str:
+    lower = (text or "").lower()
+    if any(k in lower for k in ["metal", "thrash", "death", "black", "heavy", "core", "iron maiden", "judas priest", "metallica", "sabaton", "slayer", "slipknot", "korn"]):
+        return "Metal"
+    if any(k in lower for k in ["hip hop", "hip-hop", "rap", "rapper"]):
+        return "Hip hop"
+    if any(k in lower for k in ["pop", "funk", "monkey business", "ewa farna", "kryštof"]):
+        return "Pop"
+    return vychozi
 
 
 def nacti_predchozi() -> dict:
@@ -63,131 +152,110 @@ def nacti_predchozi() -> dict:
         return {}
 
 
-def zkontroluj_bandsintown() -> list:
-    """Zdroj 1: Veřejné API Bandsintown pro sledované kapely (včetně fotek a odkazů)."""
+def zkontroluj_rss(zdroj: dict) -> list:
     vysledky = []
-    stat_mapa = {
-        "CZECH REPUBLIC": "CZ", "CZECHIA": "CZ", "CZ": "CZ",
-        "SLOVAKIA": "SK", "SK": "SK",
-        "AUSTRIA": "AT", "AT": "AT",
-        "POLAND": "PL", "PL": "PL",
-        "GERMANY": "DE", "DE": "DE",
-    }
+    resp = requests.get(zdroj["rss"], headers=HEADERS, timeout=15)
+    resp.raise_for_status()
+    root = ET.fromstring(resp.content)
 
-    for kapela in SLEDOVANE_KAPELY:
+    for item in root.findall(".//item")[:40]:
+        title = (item.findtext("title") or "").strip()
+        link = (item.findtext("link") or "").strip()
+        desc_raw = item.findtext("description") or ""
+        desc = BeautifulSoup(desc_raw, "html.parser").get_text(" ", strip=True)
+        plny_text = f"{title} {desc}"
+
+        if not title or not je_koncertni_zprava(plny_text):
+            continue
+
+        poster = ""
+        enc = item.find("enclosure")
+        if enc is not None and enc.get("url"):
+            poster = enc.get("url")
+        if not poster:
+            img_tag = BeautifulSoup(desc_raw, "html.parser").find("img")
+            if img_tag:
+                poster = img_tag.get("src") or ""
+
+        mesto, stat = urci_mesto_a_stat(plny_text)
+        datum = parsuj_datum(plny_text)
+        slug = re.sub(r"[^a-z0-9]", "", title.lower())[:32]
+
+        vysledky.append({
+            "id": f"news-{slug}-{datum}",
+            "band": title[:110],
+            "venue": zdroj["name"],
+            "city": mesto,
+            "country": stat,
+            "date": datum,
+            "genre": odhadni_zanr(plny_text, zdroj["genre"]),
+            "seller": zdroj["name"],
+            "url": link or zdroj["web"],
+            "poster": poster,
+        })
+    return vysledky
+
+
+def zkontroluj_web_clanky(zdroj: dict) -> list:
+    vysledky = []
+    resp = requests.get(zdroj["web"], headers=HEADERS, timeout=15)
+    resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, "html.parser")
+    base = "/".join(zdroj["web"].split("/")[:3])
+
+    for a in soup.select("article a, h2 a, h3 a, .article a, .news-item a"):
+        title = a.get_text(" ", strip=True)
+        href = a.get("href") or ""
+        if len(title) < 12 or not je_koncertni_zprava(title):
+            continue
+        if href.startswith("/"):
+            href = base + href
+        elif not href.startswith("http"):
+            continue
+
+        mesto, stat = urci_mesto_a_stat(title)
+        datum = parsuj_datum(title)
+        slug = re.sub(r"[^a-z0-9]", "", title.lower())[:32]
+
+        vysledky.append({
+            "id": f"news-{slug}-{datum}",
+            "band": title[:110],
+            "venue": zdroj["name"],
+            "city": mesto,
+            "country": stat,
+            "date": datum,
+            "genre": odhadni_zanr(title, zdroj["genre"]),
+            "seller": zdroj["name"],
+            "url": href,
+            "poster": "",
+        })
+    return vysledky
+
+
+def zkontroluj_hudebni_magaziny() -> list:
+    vsechny = []
+    for zdroj in CZ_HUDOBNI_WEBY:
+        nalezeno = []
         try:
-            url = f"https://rest.bandsintown.com/artists/{requests.utils.quote(kapela)}/events"
-            resp = requests.get(url, params={"app_id": "gigradar_bubla_test"}, headers=HEADERS, timeout=15)
-            if resp.status_code != 200:
-                print(f"  - Bandsintown [{kapela}]: HTTP {resp.status_code}")
-                continue
-
-            events = resp.json()
-            if not isinstance(events, list):
-                continue
-
-            for ev in events:
-                venue = ev.get("venue", {})
-                stat_kod = stat_mapa.get((venue.get("country") or "").upper(), "")
-                if stat_kod not in SLEDOVANE_STATY:
-                    continue
-
-                misto = venue.get("name", "Neznámé místo")
-                mesto = venue.get("city", "")
-                if je_nevhodny_zanr(f"{kapela} {misto}"):
-                    continue
-
-                datum = (ev.get("datetime") or "")[:10]
-                offers = ev.get("offers") or []
-                ticket_url = offers[0].get("url") if offers else ev.get("url", "")
-                poster = ev.get("image_url") or ev.get("thumb_url") or ""
-
-                seller = "Oficiální předprodej"
-                for domena, nazev in [
-                    ("ticketmaster", "Ticketmaster.cz"),
-                    ("ticketportal", "Ticketportal.cz"),
-                    ("goout", "GoOut.net"),
-                    ("smsticket", "smsticket.cz"),
-                    ("ticketstream", "Ticketstream.cz"),
-                ]:
-                    if domena in ticket_url.lower():
-                        seller = nazev
-                        break
-
-                vysledky.append({
-                    "id": f"bit-{ev.get('id', datum)}",
-                    "band": kapela,
-                    "venue": misto,
-                    "city": mesto,
-                    "country": stat_kod,
-                    "date": datum,
-                    "genre": "Metal" if kapela in ["Iron Maiden", "Judas Priest", "Sabaton", "Metallica"] else "Rock",
-                    "seller": seller,
-                    "url": ticket_url,
-                    "poster": poster,
-                })
-            time.sleep(0.3)
-        except Exception as e:
-            print(f"  - Chyba Bandsintown [{kapela}]: {e}")
-
-    print(f"[Zdroj 1 - Bandsintown]: nalezeno {len(vysledky)} akcí.")
-    return vysledky
-
-
-def zkontroluj_o2_arenu() -> list:
-    """Zdroj 2: Přímý pokus o čtení programu O2 areny (Praha)."""
-    vysledky = []
-    url = "https://www.o2arena.cz/akce/"
-    try:
-        resp = requests.get(url, headers=HEADERS, timeout=15)
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, "html.parser")
-
-        for item in soup.select("article, .event-item, .akce-item, a[href*='/akce/']"):
-            text = item.get_text(" ", strip=True)
-            datum = parsuj_datum_cz(text)
-            if not datum or len(text) < 5 or len(text) > 160 or je_nevhodny_zanr(text):
-                continue
-
-            odkaz = item.get("href") or url
-            if odkaz.startswith("/"):
-                odkaz = "https://www.o2arena.cz" + odkaz
-
-            img = item.find("img")
-            poster = ""
-            if img:
-                poster = img.get("src") or img.get("data-src") or ""
-                if poster.startswith("/"):
-                    poster = "https://www.o2arena.cz" + poster
-
-            nazev = re.sub(r"\d{1,2}\.\s*\d{1,2}\.\s*202\d", "", text).strip(" -|•")
-            if len(nazev) < 3:
-                continue
-
-            vysledky.append({
-                "id": f"o2-{re.sub(r'[^a-z0-9]', '', nazev.lower())[:25]}-{datum}",
-                "band": nazev,
-                "venue": "O2 arena",
-                "city": "Praha",
-                "country": "CZ",
-                "date": datum,
-                "genre": "Rock",
-                "seller": "Ticketmaster.cz",
-                "url": odkaz,
-                "poster": poster,
-            })
-    except Exception as e:
-        print(f"  - Chyba O2 arena: {e}")
-
-    print(f"[Zdroj 2 - O2 arena]: nalezeno {len(vysledky)} akcí.")
-    return vysledky
+            nalezeno = zkontroluj_rss(zdroj)
+            print(f"[{zdroj['name']} - RSS]: nalezeno {len(nalezeno)} koncertních zpráv.")
+        except Exception as e_rss:
+            print(f"[{zdroj['name']} - RSS selhalo]: {e_rss} -> zkouším web...")
+            try:
+                nalezeno = zkontroluj_web_clanky(zdroj)
+                print(f"[{zdroj['name']} - WEB]: nalezeno {len(nalezeno)} koncertních zpráv.")
+            except Exception as e_web:
+                print(f"[{zdroj['name']} - WEB selhalo]: {e_web}")
+        vsechny.extend(nalezeno)
+        time.sleep(0.3)
+    return vsechny
 
 
 def odesli_ntfy(nove_akce: list):
     if not nove_akce:
         return
     nadpis = f"GigRadar: {len(nove_akce)} nových koncertů"
-    zprava = "\n".join(f"• {a['band']} – {a['city']} ({a['date']})" for a in nove_akce[:5])
+    zprava = "\n".join(f"• {a['band']} ({a['city']})" for a in nove_akce[:5])
     try:
         requests.post(
             f"https://ntfy.sh/{NTFY_TOPIC}",
@@ -200,12 +268,9 @@ def odesli_ntfy(nove_akce: list):
 
 
 def main():
-    print("=== START TESTU SBĚRU DAT ===")
+    print("=== START SBĚRU KONCERTNÍCH NOVINEK ===")
     stare = nacti_predchozi()
-
-    nalezene = []
-    nalezene.extend(zkontroluj_bandsintown())
-    nalezene.extend(zkontroluj_o2_arenu())
+    nalezene = zkontroluj_hudebni_magaziny()
 
     unikatni = {}
     nove_akce = []
@@ -219,7 +284,7 @@ def main():
         if je_nove:
             nove_akce.append(akce)
 
-    serazene = sorted(unikatni.values(), key=lambda x: x.get("date", "9999-99-99"))
+    serazene = sorted(unikatni.values(), key=lambda x: x.get("date", "9999-99-99"), reverse=True)
     vystup = {
         "updatedAt": datetime.now().strftime("%d.%m.%Y %H:%M"),
         "newCount": len(nove_akce),
