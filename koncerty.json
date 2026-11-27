@@ -1,6 +1,6 @@
 {
-  "updatedAt": "27.11.2026 16:57",
-  "newCount": 1,
+  "updatedAt": "27.11.2026 18:45",
+  "newCount": 0,
   "concerts": [
     {
       "id": "news-mikaoslavvbrndvacetletodvydnvele-2026-11-27",
@@ -16,19 +16,6 @@
       "isNew": false
     },
     {
-      "id": "news-prahuekthrashovkoncertrokuanthra-2026-11-27",
-      "band": "Prahu čeká thrashový koncert roku. Anthrax, Kerry King a Sacred Reich v dubnu zmasakrují Forum Karlín",
-      "venue": "Musicserver.cz",
-      "city": "Praha",
-      "country": "CZ",
-      "date": "2026-11-27",
-      "genre": "Metal",
-      "seller": "Musicserver.cz",
-      "url": "https://musicserver.cz/clanek/80408/prahu-ceka-thrashovy-koncert-roku-anthrax-kerry-king-a-sacred-reich-v-dubnu-zmasakruji-forum-karlin/",
-      "poster": "https://musicserver.cz/img/209380hp.jpg",
-      "isNew": false
-    },
-    {
       "id": "news-livepostmetalovarchitektitheocea-2026-11-27",
       "band": "LIVE: Post-metaloví architekti The Ocean v Praze zahájili turné. Oba zpěváci se vydali do kotle",
       "venue": "iREPORT.cz",
@@ -39,7 +26,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/clanky/recenze/live-post-metalovi-architekti-the-ocean-v-praze-zahajili-turne-oba-zpevaci-se-vydali-do-kotle",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-colorfactorysevrtilipotm30letech-2026-11-27",
