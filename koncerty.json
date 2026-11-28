@@ -1,6 +1,6 @@
 {
-  "updatedAt": "28.11.2026 08:43",
-  "newCount": 1,
+  "updatedAt": "28.11.2026 10:44",
+  "newCount": 0,
   "concerts": [
     {
       "id": "news-bowwavesepoosmnctiletechvracejna-2026-11-28",
@@ -13,19 +13,6 @@
       "seller": "Musicserver.cz",
       "url": "https://musicserver.cz/clanek/80411/bow-wave-se-po-osmnacti-letech-vraceji-na-scenu-v-dubnu-zahraji-v-lucerna-music-baru/",
       "poster": "https://musicserver.cz/img/247294hp.jpg",
-      "isNew": true
-    },
-    {
-      "id": "news-mikaoslavvbrndvacetletodvydnvele-2026-11-28",
-      "band": "Mika oslaví v Brně dvacet let od vydání veleúspěšného debutu \"Life In Cartoon Motion\"",
-      "venue": "Musicserver.cz",
-      "city": "Ostrava",
-      "country": "CZ",
-      "date": "2026-11-28",
-      "genre": "Pop",
-      "seller": "Musicserver.cz",
-      "url": "https://musicserver.cz/clanek/80426/mika-oslavi-v-brne-dvacet-let-od-vydani-veleuspesneho-debutu-life-in-cartoon-motion/",
-      "poster": "https://musicserver.cz/img/202221hp.jpg",
       "isNew": false
     },
     {
