@@ -1,7 +1,20 @@
 {
-  "updatedAt": "28.11.2026 06:55",
-  "newCount": 0,
+  "updatedAt": "28.11.2026 08:43",
+  "newCount": 1,
   "concerts": [
+    {
+      "id": "news-bowwavesepoosmnctiletechvracejna-2026-11-28",
+      "band": "Bow Wave se po osmnácti letech vracejí na scénu, v dubnu zahrají v Lucerna Music Baru",
+      "venue": "Musicserver.cz",
+      "city": "Praha",
+      "country": "CZ",
+      "date": "2026-11-28",
+      "genre": "Hip hop",
+      "seller": "Musicserver.cz",
+      "url": "https://musicserver.cz/clanek/80411/bow-wave-se-po-osmnacti-letech-vraceji-na-scenu-v-dubnu-zahraji-v-lucerna-music-baru/",
+      "poster": "https://musicserver.cz/img/247294hp.jpg",
+      "isNew": true
+    },
     {
       "id": "news-mikaoslavvbrndvacetletodvydnvele-2026-11-28",
       "band": "Mika oslaví v Brně dvacet let od vydání veleúspěšného debutu \"Life In Cartoon Motion\"",
