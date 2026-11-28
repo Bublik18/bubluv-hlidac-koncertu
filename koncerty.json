@@ -1,6 +1,6 @@
 {
-  "updatedAt": "28.11.2026 00:52",
-  "newCount": 12,
+  "updatedAt": "28.11.2026 02:45",
+  "newCount": 0,
   "concerts": [
     {
       "id": "news-mikaoslavvbrndvacetletodvydnvele-2026-11-28",
@@ -13,7 +13,7 @@
       "seller": "Musicserver.cz",
       "url": "https://musicserver.cz/clanek/80426/mika-oslavi-v-brne-dvacet-let-od-vydani-veleuspesneho-debutu-life-in-cartoon-motion/",
       "poster": "https://musicserver.cz/img/202221hp.jpg",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-livepostmetalovarchitektitheocea-2026-11-28",
@@ -26,7 +26,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/clanky/recenze/live-post-metalovi-architekti-the-ocean-v-praze-zahajili-turne-oba-zpevaci-se-vydali-do-kotle",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-colorfactorysevrtilipotm30letech-2026-11-28",
@@ -39,7 +39,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/fotoreporty/colorfactory-se-vratili-po-temer-30-letech-na-scenu-v-brne-si-s-nimi-zpivala-cela-fleda",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-nacosetitvprosincimonkeybusiness-2026-11-28",
@@ -52,7 +52,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/clanky/style/na-co-se-tesit-v-prosinci-monkey-business-vyrazi-na-turne-michal-prokop-oslavi-osmdesate-narozeniny-a-david-koller-ucti-pamatku-karla-kryla",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-mig21roztaniliprasklucernamusicb-2026-11-28",
@@ -65,7 +65,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/fotoreporty/mig-21-roztancili-vyprodany-lucerna-music-bar-vyprodali-ho-trikrat-za-sebou",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-livepokpivezldoprasklucernyignor-2026-11-28",
@@ -78,7 +78,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/clanky/recenze/live-pokac-privezl-do-prazske-lucerny-ignor-tour-nechybel-humor-ukulele-ani-osobni-vzpominky",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-europeoslavilivostrav40vrothefin-2026-11-28",
@@ -91,7 +91,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/fotoreporty/europe-oslavili-v-ostrave-40-vyroci-the-final-countdown-na-megakoncertu-radia-cas-vystoupili-i-david-koller-ci-olympic",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-livekdypotebujebreetamoshovatzro-2026-11-28",
@@ -104,7 +104,7 @@
       "seller": "iREPORT.cz",
       "url": "https://www.ireport.cz/clanky/recenze/live-kdyz-potrebujes-brecet-a-moshovat-zaroven-currents-a-erra-v-lucerna-music-baru",
       "poster": "",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-thrashmetalovkoncertrokudoprahym-2026-11-28",
@@ -117,7 +117,7 @@
       "seller": "Fakker!",
       "url": "http://fakker.cz/clanek/17988/thrashmetalovy-koncert-roku-do-prahy-miri-anthrax-kerry-king-a-sacred-reich/",
       "poster": "http://fakker.cz/img/0.jpg",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-liveriseoftheroachvprazepaparoac-2026-11-28",
@@ -130,7 +130,7 @@
       "seller": "Fakker!",
       "url": "http://fakker.cz/clanek/17982/papa-roach-sleep-theory-landmvrks-praha-24-11-2026/",
       "poster": "http://fakker.cz/img/0.jpg",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-frankcarterkonusexpistols-2026-11-28",
@@ -143,7 +143,7 @@
       "seller": "Fakker!",
       "url": "http://fakker.cz/clanek/17985/frank-carter-konci-u-sex-pistols/",
       "poster": "http://fakker.cz/img/0.jpg",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": "news-mastodonmdobrnanajae2027pivezoud-2026-11-28",
@@ -156,7 +156,7 @@
       "seller": "Fakker!",
       "url": "http://fakker.cz/clanek/17981/mastodon-miri-do-brna-na-jare-2027-privezou-do-sono-centra-novou-desku-a-posilu-monolord/",
       "poster": "http://fakker.cz/img/0.jpg",
-      "isNew": true
+      "isNew": false
     }
   ]
 }
